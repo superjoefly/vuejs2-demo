@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Conditional Rendering</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Conditional Rendering</h1>
+
+
+
+    <h2>v-if</h2>
+
+    <p>In Vue, we can render a conditional block using the <b>v-if</b> directive:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;button @click="toggleSeen"&gt;Toggle seen&lt;/button&gt;<br />
+        &lt;p v-if="seen"&gt;Can you see me?&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          seen: true,
+          isSeen: true
+        },
+        methods: {
+          toggleSeen() {
+            this.seen = !this.seen;
+          },
+          toggleIfElse() {
+            this.isSeen = !this.isSeen;
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example1">
+
+      <button @click="toggleSeen">Toggle seen</button>
+      <p v-if="seen">Can you see me?</p>
+
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        seen: true,
+        isSeen: true
+      },
+      methods: {
+        toggleSeen() {
+          this.seen = !this.seen;
+        },
+        toggleIfElse() {
+          this.isSeen = !this.isSeen;
+        }
+      }
+    })
+    </script>
+
+    <p>The block will be shown based on the truthiness of the 'seen' data property.</p>
+
+    <hr />
+
+
+
+    <h2>v-else</h2>
+
+    <p>We can also add an else-block with the <b>v-else</b> directive:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;button @click="toggleIfElse"&gt;Toggle isSeen&lt;/button&gt;<br />
+        &lt;p v-if="isSeen"&gt;First you see me!&lt;/p&gt;<br />
+        &lt;p v-else&gt;And now you see me!!!&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          isSeen: true
+        },
+        methods: {
+          toggleIfElse() {
+            this.isSeen = !this.isSeen;
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example2">
+      <button @click="toggleIfElse">Toggle isSeen</button>
+      <p v-if="isSeen">First you see me!</p>
+      <p v-else>And now you see me!!!</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        isSeen: true
+      },
+      methods: {
+        toggleIfElse() {
+          this.isSeen = !this.isSeen;
+        }
+      }
+    })
+    </script>
+
+    <p>The <b>else</b> block must come <b>immediately after</b> the if (or else-if) block.</p>
+
+    <hr />
+
+
+
+
+    <h3>Conditional Groups Using Template</h3>
+
+    <p>If we want to toggle more than one element, we can use a <b>template</b> element to wrap the group of elements to be toggled. The final rendered result will not include the <b>template</b> element:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;button @click="toggleSeen"&gt;Toggle&lt;/button&gt;<br />
+        &lt;template v-if="seen"&gt;<br />
+          &lt;h3&gt;Heading&lt;/h3&gt;<br />
+          &lt;p&gt;Paragraph 1&lt;/p&gt;<br />
+          &lt;p&gt;Paragraph 2&lt;/p&gt;<br />
+        &lt;/template&gt;<br />
+        &lt;p v-else&gt;This is rendered using v-else!&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          seen: true
+        },
+        methods: {
+          toggleSeen() {
+            this.seen = !this.seen;
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example3">
+      <button @click="toggleSeen">Toggle</button>
+      <template v-if="seen">
+        <h3>Heading</h3>
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+      </template>
+      <p v-else>This is rendered using v-else!</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        seen: true
+      },
+      methods: {
+        toggleSeen() {
+          this.seen = !this.seen;
+        }
+      }
+    })
+    </script>
+
+    <p>We can still use <b>v-else</b> with the template element.</p>
+
+    <hr />
+
+
+
+
+    <h2>v-else-if</h2>
+
+    <p>The <b>v-else-if</b> directive serves as an else-if block for the <b>v-if</b> directive. It can be chained multiple times:</p>
+    <p><b>Note:</b> this example also uses <b>v-model</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;p&gt;Type &lt;b&gt;A, B&lt;/b&gt; or &lt;b&gt;C&lt;/b&gt; into the input field!&lt;/p&gt;<br />
+        &lt;input type="text" v-model="type" /&gt;<br />
+  <br />
+        &lt;p v-if="type === 'A' || type === 'a'"&gt;Type is A!&lt;/p&gt;<br />
+        <br />
+        &lt;p v-else-if="type === 'B' || type === 'b'"&gt;Type is B!&lt;/p&gt;<br />
+        &lt;p v-else-if="type === 'C' || type === 'c'"&gt;Type is C!&lt;/p&gt;<br />
+  <br />
+        &lt;p v-else&gt;Type is not A, B or C!&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          type: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <p>Type <b>A, B</b> or <b>C</b> into the input field!</p>
+      <input type="text" v-model="type" />
+
+      <p v-if="type === 'A' || type === 'a'">Type is A!</p>
+
+      <p v-else-if="type === 'B' || type === 'b'">Type is B!</p>
+      <p v-else-if="type === 'C' || type === 'c'">Type is C!</p>
+
+      <p v-else>Type is not A, B or C!</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        type: ''
+      }
+    })
+    </script>
+
+    <p>The <b>v-else-if</b> block must immediately follow a <b>v-if</b> block or another <b>v-else-if</b> block.</p>
+
+    <hr />
+
+
+
+
+    <h3>Using <b>key</b> to Control Reusable Elements</h3>
+
+    <p>To improve performance, Vue tries to render elements as efficently as possible, often re-using them instead of creating them from scratch. This is often useful, however it is not always desirable. Using a <b>key</b> attribute with unique values will inform Vue that the elements are completely separate and that they should not be re-used:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;template v-if="loginType === 'username'"&gt;<br />
+          &lt;label&gt;Username&lt;/label&gt;<br />
+          &lt;input placeholder="Enter your username..." key="username-input" /&gt;<br />
+        &lt;/template&gt;<br />
+        <br />
+        &lt;template v-else&gt;<br />
+          &lt;label&gt;Password&lt;/label&gt;<br />
+          &lt;input type="password" placeholder="Enter your password..." key="password-input" /&gt;<br />
+        &lt;/template&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;button @click="toggleInput"&gt;Toggle&lt;/button&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example5',
+        data: {
+          loginType: 'username'
+        },
+        methods: {
+          toggleInput() {
+            if (this.loginType === 'username') {
+              this.loginType = 'password';
+            } else {
+              this.loginType = 'username';
+            }
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example5">
+      <template v-if="loginType === 'username'">
+        <label>Username</label>
+        <input placeholder="Enter your username..." key="username-input" />
+      </template>
+
+      <template v-else>
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password..." key="password-input" />
+      </template>
+      <br />
+      <button @click="toggleInput">Toggle</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5',
+      data: {
+        loginType: 'username'
+      },
+      methods: {
+        toggleInput() {
+          if (this.loginType === 'username') {
+            this.loginType = 'password';
+          } else {
+            this.loginType = 'username';
+          }
+        }
+      }
+    })
+    </script>
+
+    <p>The inputs above will be rendered from scratch each time you toggle.</p>
+
+    <p><b>Note:</b> the <b>label</b> elements are still efficiently re-used because they don't have <b>key</b> attributes.</p>
+
+    <hr />
+
+
+
+
+    <h2>v-show</h2>
+
+    <p>Another Vue.js directive that can be used for conditionally displaying an element is <b>v-show</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;button @click="toggleShown"&gt;Toggle&lt;/button&gt;<br />
+        &lt;p v-show="isShown"&gt;I use &lt;b&gt;v-show&lt;/b&gt;!&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          isShown: true
+        },
+        methods: {
+          toggleShown() {
+            this.isShown = !this.isShown;
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <button @click="toggleShown">Toggle</button>
+      <p v-show="isShown">I use <b>v-show</b>!</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        isShown: true
+      },
+      methods: {
+        toggleShown() {
+          this.isShown = !this.isShown;
+        }
+      }
+    })
+    </script>
+
+    <p>The difference is that an element using <b>v-show</b> will always be rendered and remain in the DOM...<b>v-show</b> simply toggles the CSS <b>display</b> property of the element.</p>
+
+    <p><b>Note:</b> the <b>v-show</b> directive does NOT support the <b>template</b> element syntax, nor does it work with <b>v-else</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>More Notes:</h3>
+
+    <ul>
+      <li><b>v-if</b> is said to be <b>lazy</b> because the element it is attached to will not be rendered unless its bound condition becomes truthy. This is good if you don't need something to be rendered immeditately, but it's expensive if you need to toggle something often.</li>
+
+      <li>Using <b>v-show</b> can be more expensive at runtime, but it is a better option if something is going to be toggled often.</li>
+
+      <li>When using <b>v-for</b> together with <b>v-if</b>, the <b>v-for</b> directive has a higher priority. This will be discussed more in the next chapter.</li>
+    </ul>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

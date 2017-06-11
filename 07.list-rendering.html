@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>List Rendering</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>List Rendering</h1>
+
+
+    <h2>v-for</h2>
+
+    <p>The <b>v-for</b> directive is used to render a list of items based on an array:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="item in items"&gt;<br />
+            {{ item }}<br />
+          &lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+  <br />
+        &lt;!-- iterate through an array of objects like this: --&gt;<br />
+  <br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="item in tasks"&gt;<br />
+            {{ item.task }}<br />
+          &lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          items: [
+            'Go to work',
+            'Go to the bank',
+            'Walk the dog'
+          ],
+          tasks: [
+            {task: 'Go to the store'},
+            {task: 'Work out'},
+            {task: 'Take a shower'}
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example1">
+      <ul>
+        <li v-for="item in items">
+          {{ item }}
+        </li>
+      </ul>
+
+      <!-- iterate through an array of objects like this: -->
+
+      <ul>
+        <li v-for="item in tasks">
+          {{ item.task }}
+        </li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        items: [
+          'Go to work',
+          'Go to the bank',
+          'Walk the dog'
+        ],
+        tasks: [
+          {task: 'Go to the store'},
+          {task: 'Work out'},
+          {task: 'Take a shower'}
+        ]
+      }
+    })
+    </script>
+
+    <p>The <b>v-for</b> directive requires a special syntax in the form of <b>item in items</b>, where <b>items</b> is the data array, and <b>item</b> is the alias for the array element being iterated on. We can then output the 'item' using string interpolation.</p>
+
+    <hr />
+
+
+
+
+    <h3>Parent Scope and Index</h3>
+
+    <p>We have full access to parent scope properties from within the <b>v-for</b> block. We can also add a second argument to the <b>v-for</b> directive to access the items index:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="(item, index) in tasks"&gt;<br />
+            {{ parentMessage }} {{ index }} - {{ item.task }}<br />
+          &lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          parentMessage: 'Todo:',
+          tasks: [
+            {task: 'Go for a hike'},
+            {task: 'Bike ride with friend'},
+            {task: 'Finish studying'}
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example2">
+      <ul>
+        <li v-for="(item, index) in tasks">
+          {{ parentMessage }} {{ index }} - {{ item.task }}
+        </li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        parentMessage: 'Todo:',
+        tasks: [
+          {task: 'Go for a hike'},
+          {task: 'Bike ride with friend'},
+          {task: 'Finish studying'}
+        ]
+      }
+    })
+    </script>
+
+    <p>You can also use <b>of</b> as the delimiter instead of <b>in</b>, so that it more closely resembles default JavaScript syntax.</p>
+
+    <hr />
+
+
+
+
+    <h3>Template and v-for</h3>
+
+    <p>We can also use a template tag with <b>v-for</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;template v-for="item in tasks"&gt;<br />
+            &lt;li&gt;{{ item.task }}&lt;/li&gt;<br />
+            &lt;li&gt;-----------------&lt;/li&gt;<br />
+          &lt;/template&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({<br />
+      el: '#example3',<br />
+      data: {<br />
+        tasks: [<br />
+          {task: 'Watch a movie'},<br />
+          {task: 'Make some coffee'},<br />
+          {task: 'Hang with friends'}<br />
+        ]<br />
+      }<br />
+    })
+    </code></pre>
+
+    <div id="example3">
+      <ul>
+        <template v-for="item in tasks">
+          <li>{{ item.task }}</li>
+          <li>-----------------</li>
+        </template>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        tasks: [
+          {task: 'Watch a movie'},
+          {task: 'Make some coffee'},
+          {task: 'Hang with friends'}
+        ]
+      }
+    })
+    </script>
+
+    <p>This is useful for rendering multiple elements.</p>
+
+    <hr />
+
+
+
+
+    <h3>Objects and v-for</h3>
+
+    <p>Iterating through the properties of an object is easy:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="(item, key, index) in person"&gt;<br />
+            {{ index}} - {{ key }} : {{ item }}<br />
+          &lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      ------------------------------------
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          person: {
+            firstName: 'John',
+            lastName: 'Doe',
+            age: 49
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <ul>
+        <li v-for="(item, key, index) in person">
+          {{ index}} - {{ key }} : {{ item }}
+        </li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        person: {
+          firstName: 'John',
+          lastName: 'Doe',
+          age: 49
+        }
+      }
+    })
+    </script>
+
+    <p>A second argument can be provided for the <b>key</b>, and a third for the <b>index.</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Range and v-for</h3>
+
+    <p><b>v-for</b> can also take an integer:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;span v-for="n in 10"&gt;<br />
+          {{ n }}<br />
+        &lt;/span&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: '#example5'
+      })
+    </code></pre>
+
+    <div id="example5">
+      <span v-for="n in 10">
+        {{ n }}
+      </span>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5'
+    })
+    </script>
+
+
+    <hr />
+
+
+
+
+    <h3>Components and v-for</h3>
+
+    <p>We can use <b>v-for</b> on custom components just like any normal element, however, to pass data to the component we must pass a prop:</p>
+
+    <pre><code class="language-javascript">
+        &lt;div id="example6"&gt;<br />
+          &lt;p&gt;{{ title }}&lt;/p&gt;<br />
+    <br />
+          &lt;input v-model="newItem"<br />
+          @keyup.enter="addItem" /&gt;<br />
+          &lt;button @click="addItem"&gt;Add Item&lt;/button&gt;<br />
+    <br />
+          &lt;ol&gt;<br />
+            &lt;my-component<br />
+              v-for="(item, index) in todos"<br />
+              :item="item"<br />
+              :key="item.id"<br />
+              @remove="todos.splice(index, 1)"&gt;<br />
+            &lt;/my-component&gt;<br />
+          &lt;/ol&gt;<br />
+        &lt;/div&gt;
+      ----------------------------------
+      Vue.component('my-component', {
+        template: `
+
+            &lt;li&gt;<br />
+    <br />
+              {{ item }}<br />
+    <br />
+              &lt;span @click="$emit('remove')" style="color: red; font-size: 20px; margin-left: 10px; cursor: pointer"&gt;&amp;times;&lt;/span&gt;<br />
+    <br />
+            &lt;/li&gt;
+
+        `,
+        props: ['item']
+      })
+
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          todos: [
+            'Go to the store',
+            'Wash the dishes',
+            'Get to bed early'
+          ],
+          title: 'To Do List',
+          newItem: ''
+        },
+        methods: {
+          addItem() {
+            this.todos.push(this.newItem);
+            this.newItem = '';
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <p>{{ title }}</p>
+
+      <input v-model="newItem"
+      @keyup.enter="addItem" />
+      <button @click="addItem">Add Item</button>
+
+      <ol>
+        <my-component
+          v-for="(item, index) in todos"
+          :item="item"
+          :key="item.id"
+          @remove="todos.splice(index, 1)"
+          >
+        </my-component>
+      </ol>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+
+        <li>
+
+          {{ item }}
+
+          <span @click="$emit('remove')" style="color: red; font-size: 20px; margin-left: 10px; cursor: pointer">&times;</span>
+
+        </li>
+
+      `,
+      props: ['item']
+    })
+
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        todos: [
+          'Go to the store',
+          'Wash the dishes',
+          'Get to bed early'
+        ],
+        title: 'To Do List',
+        newItem: ''
+      },
+      methods: {
+        addItem() {
+          this.todos.push(this.newItem);
+          this.newItem = '';
+        }
+      }
+    })
+    </script>
+
+    <p>A <b>key</b> is required when using <b>v-for</b> on a component! More on this in the <b>key</b> section below.</p>
+
+    <hr />
+
+
+
+
+    <h3>v-for with v-if</h3>
+
+    <p>When used together on the same node, <b>v-for</b> has a higher priority than <b>v-if</b>. In the following example, the task item will only be rendered if the task is completed:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;ol&gt;<br />
+          &lt;my-component<br />
+            v-for="task in tasks"<br />
+            v-if="task.completed"<br />
+            :task="task"<br />
+            :key="task.id"&gt;<br />
+          &lt;/my-component&gt;<br />
+        &lt;/ol&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;li&gt;<br />
+          {{ task.item }}<br />
+        &lt;/li&gt;
+        `,
+        props: ['task']
+      });
+      var vm = new Vue({
+        el: '#example7',
+        data: {
+          tasks: [
+            {item: 'Learn JavaScript', completed: true},
+            {item: 'Learn Vuejs', completed: true},
+            {item: 'Get a good job', completed: false}
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example7">
+      <ol>
+        <my-component
+          v-for="task in tasks"
+          v-if="task.completed"
+          :task="task"
+          :key="task.id">
+        </my-component>
+      </ol>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <li>
+          {{ task.item }}
+        </li>
+      `,
+      props: ['task']
+    });
+    var vm = new Vue({
+      el: '#example7',
+      data: {
+        tasks: [
+          {item: 'Learn JavaScript', completed: true},
+          {item: 'Learn Vuejs', completed: true},
+          {item: 'Get a good job', completed: false}
+        ]
+      }
+    })
+    </script>
+
+    <p>If your intent is to conditionally skip execution of the loop, you can place <b>v-if</b> on a wrapper element such as <b>template</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>key</h3>
+
+    <p>In order for Vue to track a nodes identity when rendering list output, it is suggested to provide a unique <b>key</b> attribute for each item. An ideal value for key would be the unique id of each item. We can use <b>v-bind</b> to bind it to dynamic values:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example8"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="prop in myArray"<br />
+            :key="prop.id"<br />
+          &gt;{{ prop.item }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example8',
+        data: {
+          myArray: [
+            {item: 'First Item', id: 1},
+            {item: 'Second Item', id: 2},
+            {item: 'Third Item', id: 3}
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example8">
+      <ul>
+        <li v-for="prop in myArray"
+          :key="prop.id"
+        >{{ prop.item }}</li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example8',
+      data: {
+        myArray: [
+          {item: 'First Item', id: 1},
+          {item: 'Second Item', id: 2},
+          {item: 'Third Item', id: 3}
+        ]
+      }
+    })
+    </script>
+
+    <p>It is best to provide a <b>key</b> with <b>v-for</b> whenever possible, unless the iterated DOM content is simple or when seeking performance gains.</p>
+
+    <hr />
+
+
+
+
+    <h2>Array Change Detection</h2>
+
+    <h3>Mutation Methods</h3>
+
+    <p>Vue wraps the observed array's mutation methods so that they will also trigger updates. The wrapped methods include:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example9"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="item in mutationMethods"&gt;{{ item }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example9',
+        data: {
+          mutationMethods: [
+            'push()',
+            'pop()',
+            'shift()',
+            'unshift()',
+            'splice()',
+            'sort()',
+            'reverse()'
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example9">
+      <ul>
+        <li v-for="item in mutationMethods">{{ item }}</li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example9',
+      data: {
+        mutationMethods: [
+          'push()',
+          'pop()',
+          'shift()',
+          'unshift()',
+          'splice()',
+          'sort()',
+          'reverse()'
+        ]
+      }
+    })
+    </script>
+
+    <p>These methods can be tested in the console! Example: <b>vm.mutationMethods.pop()</b> ... will remove the last item in the array above.</p>
+
+    <hr />
+
+
+
+
+    <h3>Replacing an Array</h3>
+
+    <p>We also have access to non-mutating methods such as <b>filter()</b>, <b>concat()</b> and <b>slice()</b> which do not mutate the original array, but return a new array.</p>
+
+    <p>When working with these methods, you can just replace the array with a new one:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example10"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="item in nonMutations"&gt;{{ item }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: '#example10',
+        data: {
+          nonMutations: [
+            'filter()',
+            'concat()',
+            'slice()'
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example10">
+      <ul>
+        <li v-for="item in nonMutations">{{ item }}</li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example10',
+      data: {
+        nonMutations: [
+          'filter()',
+          'concat()',
+          'slice()'
+        ]
+      }
+    })
+    </script>
+
+    <p>Example in Console: <b>vm.nonMutations = vm.nonMutations.filter(function (item) {return item.match(/filter()/)})</b></p>
+
+    <p>This does NOT throw away the existing DOM and re-render the entire list, so replacing an array with another array containing overlapping objects is an efficient procees.</p>
+
+    <hr />
+
+
+
+    <h3>Caveats</h3>
+
+    <p>Do to JavaScript limitations, Vue <b>cannot</b> detect the following changes to an array:</p>
+
+    <ul>
+      <li>Directly setting an item with the index: <b>vm.items[indexOfItem] = newValue</b></li>
+      <li>Modifying the length of an array: <b>vm.items.length = newLength</b></li>
+    </ul>
+
+    <p>Two methods to overcome caveat 1 are:</p>
+    <ul>
+      <li><b>Vue.set(myArray, index, newValue)</b></li>
+      <li><b>myArray.splice(index, 1, newValue)</b></li>
+    </ul>
+
+    <p>For caveat 2 we can use <b>splice()</b>:</p>
+
+    <ul>
+      <li><b>myArray.splice(newLength)</b></li>
+    </ul>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example11"&gt;<br />
+        &lt;p&gt;-----------------------&lt;/p&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="item in items"&gt;{{ item }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+        &lt;p&gt;-----------------------&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -------------------------------------
+      var vmTest = new Vue({
+        el: '#example11',
+        data: {
+          items: [
+            'item 1',
+            'item 2',
+            'item 3'
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example11">
+      <p>-----------------------</p>
+      <ul>
+        <li v-for="item in items">{{ item }}</li>
+      </ul>
+      <p>-----------------------</p>
+    </div>
+
+    <script>
+    var vmTest = new Vue({
+      el: '#example11',
+      data: {
+        items: [
+          'item 1',
+          'item 2',
+          'item 3'
+        ]
+      }
+    })
+    </script>
+
+    <p>Test in Console:</p>
+    <ul>
+      <li>Set item using index: <b>Vue.set(vmTest.items, 2, 'new value!');</b></li>
+      <li>Set item using index: <b>vmTest.items.splice(1, 1, 'another item');</b></li>
+      <li>Modify length of array: <b>vmTest.items.splice(0, 1);</b></li>
+    </ul>
+
+    <hr />
+
+
+
+    <h3>Filtering and Sorting Results</h3>
+
+    <p>We can use a <b>computed property</b> to return a filtered or sorted array:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example12"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="n in evenNumbers"&gt;{{ n }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+  <br />
+        &lt;!-- Inside nested for-loops, we can use a method instead: --&gt;<br />
+  <br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="n in even(numbers)"&gt;{{ n }}&lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: '#example12',
+        data: {
+          numbers: [1, 2, 3, 4, 5, 6, 7]
+        },
+        computed: {
+          evenNumbers() {
+            return this.numbers.filter(function(number) {
+              return number % 2 === 0;
+            })
+          }
+        },
+        methods: {
+          even(numbers) {
+            return numbers.filter(function(number) {
+              return number % 2 === 0;
+            })
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example12">
+      <ul>
+        <li v-for="n in evenNumbers">{{ n }}</li>
+      </ul>
+
+      <!-- Inside nested for-loops, we can use a method instead: -->
+
+      <ul>
+        <li v-for="n in even(numbers)">{{ n }}</li>
+      </ul>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example12',
+      data: {
+        numbers: [1, 2, 3, 4, 5, 6, 7]
+      },
+      computed: {
+        evenNumbers() {
+          return this.numbers.filter(function(number) {
+            return number % 2 === 0;
+          })
+        }
+      },
+      methods: {
+        even(numbers) {
+          return numbers.filter(function(number) {
+            return number % 2 === 0;
+          })
+        }
+      }
+    })
+    </script>
+
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+
+  </body>
+</html>

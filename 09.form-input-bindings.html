@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Form Input Bindings</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Form Input Bindings</h1>
+
+
+    <h3>Basic Usage</h3>
+
+    <p>The <b>v-model</b> directive can be used to create two-way data bindings on form input and textarea elements. Vue automatically picks the correct way to update the element based on the input type.</p>
+
+    <p>Note: <b>v-model</b> will ignore the initial <b>value</b>, <b>checked</b> or <b>selected</b> attributes found on any form elements. It will always treat the Vue instance as the source of truth. Always declare the initial value inside the <b>data</b> option of your component.</p>
+
+    <hr />
+
+
+
+
+    <h3>Text</h3>
+
+    <p>Enter text into the input field to update the message data property:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;input type="text" placeholder="Edit the message!!" v-model="message" /&gt;<br />
+        &lt;p&gt;Message: {{ message }}&lt;/p&gt;<br />
+  <br />
+        &lt;!-- Multiple lines of text: --&gt;<br />
+        &lt;textarea<br />
+          v-model="message2"<br />
+          placeholder="Enter multiple lines of text here!"<br />
+          @keyup.ctrl.67 = 'clear'<br />
+        &gt;&lt;/textarea&gt;<br />
+        &lt;p style="white-space:pre; background-color: beige;"&gt;{{ message2 }}&lt;/p&gt;<br />
+  <br />
+        &lt;!-- Another Textarea --&gt;<br />
+        &lt;textarea v-model="message2" placeholder="Use v-model to output in text areas!"&gt;&lt;/textarea&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          message: '',
+          message2: ''
+        },
+        methods: {
+          clear() {
+            this.message2 = '';
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example1">
+      <input type="text" placeholder="Edit the message!!" v-model="message" />
+      <p>Message: {{ message }}</p>
+
+      <!-- Multiple lines of text: -->
+      <textarea
+        v-model="message2"
+        placeholder="Enter multiple lines of text here!"
+        @keyup.ctrl.67 = 'clear'
+      ></textarea>
+      <p style="white-space:pre; background-color: beige;">{{ message2 }}</p>
+
+      <!-- Another Textarea -->
+      <textarea v-model="message2" placeholder="Use v-model to output in text areas!"></textarea>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        message: '',
+        message2: ''
+      },
+      methods: {
+        clear() {
+          this.message2 = '';
+        }
+      }
+    })
+    </script>
+
+    <p>Note: interpolation inside textareas won't work...use <b>v-model</b> instead. (see above!)</p>
+
+    <hr />
+
+
+
+
+    <h3>Checkbox</h3>
+
+    <p>Single Checkbox (boolean value):</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;input type="checkbox" id="checkbox" v-model="checked" /&gt;<br />
+        &lt;label for="checkbox"&gt;{{ checked }}&lt;/label&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          checked: false
+        }
+      })
+    </code></pre>
+
+    <div id="example2">
+      <input type="checkbox" id="checkbox" v-model="checked" />
+      <label for="checkbox">{{ checked }}</label>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        checked: false
+      }
+    })
+    </script>
+
+    <p>When the input above is selected, the 'checked' data property changes to true.</p>
+
+    <hr />
+
+
+
+
+    <h3>Multiple Checkboxes</h3>
+
+    <p>Multiple checkboxes bound to the same array:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;input type="checkbox" id="red" value="Red" v-model="colors" /&gt;<br />
+        &lt;label for="red"&gt;Red&lt;/label&gt;<br />
+        &lt;input type="checkbox" id="green" value="Green" v-model="colors" /&gt;<br />
+        &lt;label for="green"&gt;Green&lt;/label&gt;<br />
+        &lt;input type="checkbox" id="blue" value="Blue" v-model="colors" /&gt;<br />
+        &lt;label for="blue"&gt;Blue&lt;/label&gt;<br />
+        <br />
+        &lt;p&gt;Chosen Colors: {{ colors }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          colors: ['Red']
+        }
+      })
+    </code></pre>
+
+    <div id="example3">
+      <input type="checkbox" id="red" value="Red" v-model="colors" />
+      <label for="red">Red</label>
+      <input type="checkbox" id="green" value="Green" v-model="colors" />
+      <label for="green">Green</label>
+      <input type="checkbox" id="blue" value="Blue" v-model="colors" />
+      <label for="blue">Blue</label>
+
+      <p>Chosen Colors: {{ colors }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        colors: ['Red']
+      }
+    })
+    </script>
+
+    <p>When we select a color, it's value becomes true and it is pushed to the array.</p>
+
+    <hr />
+
+
+
+
+    <h3>Radio Inputs</h3>
+
+    <p>Select one:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;input type="radio" id="yes" value="Yes" v-model="picked" /&gt;<br />
+        &lt;label for="yes"&gt;Yes&lt;/label&gt;<br />
+  <br />
+        &lt;input type="radio" id="no" value="No" v-model="picked" /&gt;<br />
+        &lt;label for="no"&gt;No&lt;/label&gt;<br />
+  <br />
+        &lt;p&gt;Picked: {{ picked }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          picked: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <input type="radio" id="yes" value="Yes" v-model="picked" />
+      <label for="yes">Yes</label>
+
+      <input type="radio" id="no" value="No" v-model="picked" />
+      <label for="no">No</label>
+
+      <p>Picked: {{ picked }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        picked: ''
+      }
+    })
+    </script>
+
+    <p>Notice that the options above are bound to the same data property.</p>
+
+    <hr />
+
+
+
+
+    <h3>Single Select</h3>
+
+    <p>Enables a single selection:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;p&gt;Selected: {{ selected }}&lt;/p&gt;<br />
+        &lt;select v-model="selected"&gt;<br />
+          &lt;option disabled value=""&gt;Select One&lt;/option&gt;<br />
+          &lt;option&gt;Red&lt;/option&gt;<br />
+          &lt;option&gt;Blue&lt;/option&gt;<br />
+          &lt;option&gt;Green&lt;/option&gt;<br />
+        &lt;/select&gt;<br />
+      &lt;/div&gt;
+      --------------------------------
+      var vm = new Vue({
+        el: "#example5",
+        data: {
+          selected: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example5">
+      <p>Selected: {{ selected }}</p>
+      <select v-model="selected">
+        <option disabled value="">Select One</option>
+        <option>Red</option>
+        <option>Blue</option>
+        <option>Green</option>
+      </select>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: "#example5",
+      data: {
+        selected: ''
+      }
+    })
+    </script>
+
+    <p>It is recommended to provide a disabled option with an empty value for the first option.</p>
+
+    <hr />
+
+
+
+
+    <h3>Multiple Select</h3>
+
+    <p>Enables visibility of multiple options:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;p&gt;Selected: {{ selected }}&lt;/p&gt;<br />
+        &lt;select v-model="selected" multiple&gt;<br />
+          &lt;option&gt;Red&lt;/option&gt;<br />
+          &lt;option&gt;Blue&lt;/option&gt;<br />
+          &lt;option&gt;Green&lt;/option&gt;<br />
+        &lt;/select&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          selected: []
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <p>Selected: {{ selected }}</p>
+      <select v-model="selected" multiple>
+        <option>Red</option>
+        <option>Blue</option>
+        <option>Green</option>
+      </select>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        selected: []
+      }
+    })
+    </script>
+
+    <p>The selected option is bound to an array.</p>
+
+    <hr />
+
+
+
+
+    <h3>Dynamic Options</h3>
+
+    <p>Rendered with <b>v-for</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;select v-model="selected"&gt;<br />
+          &lt;option v-for="option in options" :value="option.color"&gt;<br />
+            {{ option.text }}<br />
+          &lt;/option&gt;<br />
+        &lt;/select&gt;<br />
+        &lt;p&gt;Selected: {{ selected }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: "#example7",
+        data: {
+          selected: 'Red',
+          options: [
+            {text: 'One', color: 'Red'},
+            {text: 'Two', color: 'Green'},
+            {text: 'Three', color: 'Blue'},
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="example7">
+      <select v-model="selected">
+        <option v-for="option in options" :value="option.color">
+          {{ option.text }}
+        </option>
+      </select>
+      <p>Selected: {{ selected }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: "#example7",
+      data: {
+        selected: 'Red',
+        options: [
+          {text: 'One', color: 'Red'},
+          {text: 'Two', color: 'Green'},
+          {text: 'Three', color: 'Blue'},
+        ]
+      }
+    })
+    </script>
+
+    <p><b>v-for</b> loops through the options array and outputs the value of the <b>text</b> property for the options in the select menu.</p>
+
+    <hr />
+
+
+
+
+    <h3>Value Bindings</h3>
+
+    <p>The <b>v-model</b> value bindings are usually static strings (or booleans for checkbox). However, to bind the value to a dynamic property on the Vue instance, we can use <b>v-bind</b>. This also allows us to bind non-string values:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example8"&gt;<br />
+        &lt;p&gt;Checkbox:&lt;/p&gt;<br />
+        &lt;input<br />
+          type="checkbox"<br />
+          v-model="toggle"<br />
+          :true-value="a"<br />
+          :false-value="b"/&gt;<br />
+  <br />
+        &lt;p&gt;Value: {{toggle}}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: "#example8",
+        data: {
+          toggle: true,
+          a: 'vm.toggle === vm.a',
+          b: 'vm.toggle === vm.b'
+        }
+      })
+    </code></pre>
+
+    <div id="example8">
+      <p>Checkbox:</p>
+      <input
+        type="checkbox"
+        v-model="toggle"
+        :true-value="a"
+        :false-value="b"/>
+
+      <p>Value: {{toggle}}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: "#example8",
+      data: {
+        toggle: true,
+        a: 'vm.toggle === vm.a',
+        b: 'vm.toggle === vm.b'
+      }
+    })
+    </script>
+
+    <p>When checked, <b>vm.toggle === vm.a</b>. When unchecked <b>vm.toggle === vm.b</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Radio</h3>
+
+    <p>In the following example, the <b>'picked'</b> data property is bound to the value of <b>'a'</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example9"&gt;<br />
+        &lt;input type="radio" id="yes" v-model="picked" :value="a" /&gt;<br />
+        &lt;label for="yes"&gt;Yes&lt;/label&gt;<br />
+        &lt;input type="radio" id="no" v-model="picked" :value="b" /&gt;<br />
+        &lt;label for="no"&gt;No&lt;/label&gt;<br />
+        &lt;p&gt;Picked: {{ picked }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: '#example9',
+        data: {
+          picked: '',
+          a: 'vm.picked === vm.a',
+          b: 'vm.picked === vm.b'
+        }
+      })
+    </code></pre>
+
+    <div id="example9">
+      <input type="radio" id="yes" v-model="picked" :value="a" />
+      <label for="yes">Yes</label>
+      <input type="radio" id="no" v-model="picked" :value="b" />
+      <label for="no">No</label>
+      <p>Picked: {{ picked }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example9',
+      data: {
+        picked: '',
+        a: 'vm.picked === vm.a',
+        b: 'vm.picked === vm.b'
+      }
+    })
+    </script>
+
+    <p>When <b>yes</b> is picked, <b>vm.picked === vm.a</b>. When <b>no</b> is picked, <b>vm.picked === vm.b</b>.</p>
+
+    <hr />
+
+
+    <h3>Select Options</h3>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example10"&gt;<br />
+        &lt;select v-model="selected"&gt;<br />
+          &lt;option disabled value=""&gt;Select One&lt;/option&gt;<br />
+          &lt;option :value="{ number: 333 }"&gt;333&lt;/option&gt;<br />
+        &lt;/select&gt;<br />
+  <br />
+        &lt;p&gt;Selected: {{ selected }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------------
+      var vm = new Vue({
+        el: '#example10',
+        data: {
+          selected: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example10">
+      <select v-model="selected">
+        <option disabled value="">Select One</option>
+        <option :value="{ number: 333 }">333</option>
+      </select>
+
+      <p>Selected: {{ selected }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example10',
+      data: {
+        selected: ''
+      }
+    })
+    </script>
+
+    <p>typeof <b>vm.selected</b> -> "object"</p>
+    <p>typeof <b>vm.selected.number</b> -> "number"</p>
+
+    <hr />
+
+
+
+    <h2>Modifiers</h2>
+
+    <h3>.lazy</h3>
+
+    <p>The <b>.lazy</b> modifier enables <b>v-model</b> to sync the input with the data after a <b>change</b> event instead of after each <b>input</b> event:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example11"&gt;<br />
+        &lt;p&gt;Type something and then press the &lt;b&gt;tab&lt;/b&gt; key to trigger a &lt;b&gt;change&lt;/b&gt; event:&lt;/p&gt;<br />
+        &lt;input v-model.lazy="message" /&gt;<br />
+        &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example11',
+        data: {
+          message: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example11">
+      <p>Type something and then press the <b>tab</b> key to trigger a <b>change</b> event:</p>
+      <input v-model.lazy="message" />
+      <p>{{ message }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example11',
+      data: {
+        message: ''
+      }
+    })
+    </script>
+
+    <p>Now the input is synced with the data after <b>"change"</b> instead of each <b>"input"</b>.</p>
+
+    <hr />
+
+
+
+    <h3>.number</h3>
+
+    <p>The <b>.number</b> modifier enables user input to be automatically typecast as a number:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example12"&gt;<br />
+        &lt;p&gt;The value is returned as a number and not a string:&lt;/p&gt;<br />
+        &lt;input v-model.number="number" /&gt;<br />
+        &lt;p&gt;{{ number }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example12',
+        data: {
+          number: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example12">
+      <p>The value is returned as a number and not a string:</p>
+      <input v-model.number="number" />
+      <p>{{ number }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example12',
+      data: {
+        number: ''
+      }
+    })
+    </script>
+
+    <p>This is useful because even with <b>type='number'</b>, the value of HTML input elements always returns a string.</p>
+
+    <hr />
+
+
+    <h3>.trim</h3>
+
+    <p>The <b>.trim</b> modifier automatically trims whitespace on either side of the returned string:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example13"&gt;<br />
+        &lt;input v-model.trim="message" /&gt;<br />
+        &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example13',
+        data: {
+          message: ''
+        }
+      })
+    </code></pre>
+
+    <div id="example13">
+      <input v-model.trim="message" />
+      <p>{{ message }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example13',
+      data: {
+        message: ''
+      }
+    })
+    </script>
+
+    <p><b>.trim</b> replicates the JavaScript <b>.trim()</b> method.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

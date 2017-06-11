@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Event Handling</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Event Handling</h1>
+
+
+    <h3>Listening to Events</h3>
+
+    <p>The <b>v-on</b> directive is used to listen to DOM events and run JavaScript when triggered:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;button @click="counter += 1"&gt;Increment&lt;/button&gt;<br />
+        &lt;p&gt;Number of clicks: {{ counter }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ----------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          counter: 0
+        }
+      })
+    </code></pre>
+
+    <div id="example1">
+      <button @click="counter += 1">Increment</button>
+      <p>Number of clicks: {{ counter }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        counter: 0
+      }
+    })
+    </script>
+
+    <p><b>@click</b> is the shorthand for <b>v-on:click</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Method Event Handlers</h3>
+
+    <p>For more complex logic, we can pass a <b>method</b> to <b>v-on</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;button @click="getFullName"&gt;Greeting&lt;/button&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          name: {
+            firstName: 'Ben',
+            lastName: 'Coding'
+          }
+        },
+        methods: {
+          getFullName() {
+            alert('Hello, ' + this.name.firstName + ' ' + this.name.lastName);
+          }
+        }
+      })
+
+      // Call method from outside Vue instance
+      // vm.getFullName();
+    </code></pre>
+
+    <div id="example2">
+      <button @click="getFullName">Greeting</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        name: {
+          firstName: 'Ben',
+          lastName: 'Coding'
+        }
+      },
+      methods: {
+        getFullName() {
+          alert('Hello, ' + this.name.firstName + ' ' + this.name.lastName);
+        }
+      }
+    })
+
+    // Call method from outside Vue instance
+    // vm.getFullName();
+    </script>
+
+    <p>Methods inside the Vue instance can also be called with regular JavaScript (see above).</p>
+
+    <hr />
+
+
+
+
+    <h3>Methods in Inline Handlers</h3>
+
+    <p>We can also use methods in an inline JavaScript statement:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;button @click="greet('Ben Coding')"&gt;Greeting2&lt;/button&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example3',
+        methods: {
+          greet(name) {
+            alert("Hey there, " + name + '!');
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example3">
+      <button @click="greet('Ben Coding')">Greeting2</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      methods: {
+        greet(name) {
+          alert("Hey there, " + name + '!');
+        }
+      }
+    })
+    </script>
+
+    <p>In the example above, we pass in an argument to the greet method.</p>
+
+    <hr />
+
+
+
+
+    <h3>Accessing the Native DOM Event</h3>
+
+    <p>If we need to access the native DOM event in an inline statement handler, we can use the special <b>$event</b> variable:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;form&gt;<br />
+          &lt;input type="submit" value="Submit" v-on:click="warn('Form could not be submitted', $event)"&gt;&lt;/input&gt;<br />
+        &lt;/form&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example4',
+        methods: {
+          warn(message, event) {
+            if(event) event.preventDefault();
+            alert(message);
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <form>
+        <input type="submit" value="Submit" v-on:click="warn('Form could not be submitted', $event)"></input>
+      </form>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      methods: {
+        warn(message, event) {
+          if(event) event.preventDefault();
+          alert(message);
+        }
+      }
+    })
+    </script>
+
+    <p>Now we have access to the native DOM event!</p>
+
+    <hr />
+
+
+
+
+    <h3>Event Modifiers</h3>
+
+    <p>Vue provides <b>event modifiers</b> for <b>v-on</b>. Modifiers are directive post-fixes denoted by a dot:</p>
+
+      <ul>
+        <li><b>@click.stop</b>: propagation will be stopped</li>
+        <li><b>@submit.prevent</b>: page will not reload</li>
+        <li><b>@click.capture</b>: use capture mode</li>
+        <li><b>@click.self</b>: only trigger handler if event.target is the element itself</li>
+        <li><b>@click.once</b>: click event will be triggered at most once</li>
+      </ul>
+
+    <p>Example: <b>@click.capture</b> - the <b>div</b> element uses <b>.capture</b> so that it's event is handled first! (default mode is bubbling)</p>
+
+
+    <div id="example5">
+      <div
+        style="height: 100px; width: 300px; background-color: beige;"
+        @click.capture="alert2">
+
+        <p style="padding: 45px;"
+        @click="alert1">
+
+        Click Me! I use <b>.capture!</b></p>
+      </div>
+    </div>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;div<br />
+          style="height: 100px; width: 300px; background-color: beige;"<br />
+          @click.capture="alert2"&gt;<br />
+          <br />
+          &lt;p style="padding: 45px;"<br />
+          @click="alert1"&gt;<br />
+          <br />
+          Click Me! I use &lt;b&gt;.capture!&lt;/b&gt;&lt;/p&gt;<br />
+        &lt;/div&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      var vm = new Vue({
+        el: '#example5',
+        methods: {
+          alert1() {
+            alert('You clicked the paragraph!');
+          },
+          alert2() {
+            alert('You clicked the div!');
+          }
+        }
+      })
+    </code></pre>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5',
+      methods: {
+        alert1() {
+          alert('You clicked the paragraph!');
+        },
+        alert2() {
+          alert('You clicked the div!');
+        }
+      }
+    })
+    </script>
+
+    <p><b>Note: </b>Unlike the other modifiers, the <b>.once</b> modifier can also be used on <b>component events</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Key Modifiers</h3>
+
+    <p>Vue allows adding key modifiers for <b>v-on</b> when listening to <b>key</b> events. Key codes can be added using their numeric value, but it is often simpler to use the aliases provided by Vue for the most commonly used keys.</p>
+
+    <p>Following is a list of all key modifier aliases:</p>
+
+    <ul>
+      <li>.enter</li>
+      <li>.tab</li>
+      <li>.delete (captures both 'Delete' and 'Backspace')</li>
+      <li>.esc</li>
+      <li>.space</li>
+      <li>.up</li>
+      <li>.down</li>
+      <li>.left</li>
+      <li>.right</li>
+    </ul>
+
+    <p>Example: enter some text into the input field below and then press and release (@keyup) the <b>enter</b> key!</p>
+
+    <div id="example6">
+      <input @keyup.enter="submit" />
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      methods: {
+        submit() {
+          alert('You pressed the enter key!');
+        }
+      }
+    })
+    </script>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;input @keyup.enter="submit" /&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        methods: {
+          submit() {
+            alert('You pressed the enter key!');
+          }
+        }
+      })
+    </code></pre>
+
+    <p>It is also possible to define <b>custom key modifier aliases</b> via the global <b>config.keyCodes</b> object:</p>
+
+    <p>Example: <b>Vue.config.keyCodes.f1 = 112</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Modifier Keys</h3>
+
+    <p>The following modifiers are available to trigger mouse or keyboard event listeners <b>only when the cooresponding modifier key is pressed:</b></p>
+
+    <ul>
+      <li>.ctrl</li>
+      <li>.alt</li>
+      <li>.shift</li>
+      <li>.meta</li>
+    </ul>
+
+    <div id="example7">
+      <p>Example: while in the input field, press <b>ctrl + c</b> to clear the input field.</p>
+      <input
+        type="text"
+        v-model="message"
+        @keyup.ctrl.67 = 'clear' />
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example7',
+      data: {
+        message: 'This is a message!'
+      },
+      methods: {
+        clear() {
+          this.message = '';
+        }
+      }
+    })
+    </script>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;p&gt;While in the input field, press &lt;b&gt;ctrl + c&lt;/b&gt; to clear the input field.&lt;/p&gt;<br />
+        &lt;input<br />
+          type="text"<br />
+          v-model="message"<br />
+          @keyup.ctrl.67 = 'clear' /&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      var vm = new Vue({
+        el: '#example7',
+        data: {
+          message: 'This is a message!'
+        },
+        methods: {
+          clear() {
+            this.message = '';
+          }
+        }
+      })
+    </code></pre>
+
+    <p>Note: modifier keys must be pressed when the event is emitted. In the example above, if you release the <b>"c"</b> key without holding down the <b>"ctrl"</b> key, the event will not be emitted.</p>
+
+    <hr />
+
+
+
+
+    <h3>Benefits to Using v-on:</h3>
+
+    <p>There are several benefits to using <b>v-on</b>:</p>
+
+    <ol>
+      <li>Easy to locate handler function implementations in HTML template.</li>
+      <li>ViewModel is cleaner and DOM free making it easier to test.</li>
+      <li>When a ViewModel is destroyed, all event listeners are automatically removed.</li>
+    </ol>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+
+  </body>
+</html>

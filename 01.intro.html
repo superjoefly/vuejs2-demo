@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Vuejs Intro</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Vuejs Intro</h1>
+
+    <h3>Declarative Rendering via Text Interpolation</h3>
+
+    <p>Render a message using string interpolation:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app"&gt;<br />
+        {{ message }}<br />
+      &lt;/div&gt;
+
+      -----------------
+
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: 'Well, Hello There!'
+        }
+      })
+    </code></pre>
+
+    <div id="app">
+      <p>Message: {{ message }}</p>
+    </div>
+
+    <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Well, Hello There!'
+      }
+    })
+    </script>
+
+    <p>Entering <b>app.message = 'something else'</b> in the console will change the value of the message property!</p>
+
+    <hr />
+
+
+
+    <h3>Binding Element Attributes</h3>
+
+    <p>Dynamically bind the title attribute to a data property using <b>v-bind</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app2"&gt;<br />
+        &lt;span v-bind:title="message2"&gt;Hover over me to see the title!&lt;/span&gt;<br />
+      &lt;/div&gt;
+
+      -------------------
+
+      var app2 = new Vue({
+        el: '#app2',
+        data: {
+          message2: 'Here is the title!'
+        }
+      })
+    </code></pre>
+
+    <div id="app2">
+      <span v-bind:title="message2">Hover over me to see the title!</span>
+    </div>
+
+    <script>
+    var app2 = new Vue({
+      el: '#app2',
+      data: {
+        message2: 'Here is the title!'
+      }
+    })
+    </script>
+
+    <p>Entering <b>app2.message2 = 'Something else'</b> in the console will change the value of the dynamically bound title!</p>
+
+    <p><b>Note:</b> the shorthand for <b>v-bind:</b> is to just use the colon <b>:</b> So in the example above we would just use <b>:title</b> instead of <b>v-bind:title</b></p>
+
+    <hr />
+
+
+
+    <h3>Conditionals and Loops</h3>
+
+    <p>Toggle the presence of an element:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app3"&gt;<br />
+        &lt;p v-if="seen"&gt;This is a paragraph!&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ---------------------
+
+      var app3 = new Vue({
+        el: '#app3',
+        data: {
+          seen: true
+        }
+      })
+    </code></pre>
+
+    <div id="app3">
+      <p v-if="seen">This is a paragraph!</p>
+    </div>
+
+    <script>
+    var app3 = new Vue({
+      el: '#app3',
+      data: {
+        seen: true
+      }
+    })
+    </script>
+
+    <p>Entering <b>app3.seen = false</b> will toggle the presence of the element!</p>
+
+    <hr />
+
+
+    <h3>Display a List of Items</h3>
+
+    <p>Display a list of todo items using v-for:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app4"&gt;<br />
+        &lt;ul&gt;<br />
+          &lt;li v-for="todo in todos"&gt;<br />
+            {{ todo.text }}<br />
+          &lt;/li&gt;<br />
+        &lt;/ul&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------
+
+      var app4 = new Vue({
+        el: '#app4',
+        data: {
+          todos: [
+            { text: 'Study JavaScript' },
+            { text: 'Practice Vuejs' },
+            { text: 'Walk Bella!' }
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="app4">
+      <ul>
+        <li v-for="todo in todos">
+          {{ todo.text }}
+        </li>
+      </ul>
+    </div>
+
+    <script>
+    var app4 = new Vue({
+      el: '#app4',
+      data: {
+        todos: [
+          { text: 'Study JavaScript' },
+          { text: 'Practice Vuejs' },
+          { text: 'Walk Bella!' }
+        ]
+      }
+    })
+    </script>
+
+    <p>Entering <b>app4.todos.push({text: 'something else'})</b> will append an item to the todo list!</p>
+
+    <hr />
+
+
+
+    <h3>Respond to User Input</h3>
+
+    <p>Use <b>event listeners</b> to invoke <b>methods</b> on the Vue instance:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app5"&gt;<br />
+        &lt;button v-on:click="reverseMessage"&gt;Reverse Message&lt;/button&gt;<br />
+        &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      --------------------------
+
+      var app5 = new Vue({
+        el: '#app5',
+        data: {
+          message: 'Reverse this message!'
+        },
+        methods: {
+          reverseMessage() {
+            this.message = this.message.split('').reverse().join('');
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="app5">
+      <button v-on:click="reverseMessage">Reverse Message</button>
+      <p>{{ message }}</p>
+    </div>
+
+    <script>
+    var app5 = new Vue({
+      el: '#app5',
+      data: {
+        message: 'Reverse this message!'
+      },
+      methods: {
+        reverseMessage() {
+          this.message = this.message.split('').reverse().join('');
+        }
+      }
+    })
+    </script>
+
+    <p>In the method above, we update the state of our app without touching the DOM - all DOM manipulations are handled by Vue.</p>
+
+    <p><b>Note:</b> the shorthand for <b>v-on:</b> is to just use the <b>@</b> symobol. So in the example above we would just use <b>@click</b> instead of <b>v-on:click</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Two Way Binding</h3>
+
+    <p>Use <b>v-model</b> to apply dynamic, two-way binding for inputs:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app6"&gt;<br />
+        &lt;input type="text" v-model="message" /&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ------------------------
+
+      var app6 = new Vue({
+        el: '#app6',
+        data: {
+          message: 'Change Me!'
+        }
+      })
+    </code></pre>
+
+    <div id="app6">
+      <input type="text" v-model="message" />
+      <br />
+      <p>{{ message }}</p>
+    </div>
+
+    <script>
+    var app6 = new Vue({
+      el: '#app6',
+      data: {
+        message: 'Change Me!'
+      }
+    })
+    </script>
+
+    <p><b>Note:</b> <b>v-model</b> is actually short-hand for <b>:value="dataProperty"</b> and <b>@input="dataProperty = $event.target.value"</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Register and Render Components</h3>
+
+    <p>In Vue, we can compose and register components that are small, self-contained and reusable:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app7"&gt;<br />
+        &lt;my-component&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      --------------------------
+      Vue.component('myComponent', {
+        template: `
+          &lt;div&gt;Here is my custom component!&lt;/div&gt;
+        `
+      })
+
+      var app7 = new Vue({
+        el: '#app7'
+      })
+    </code></pre>
+
+    <div id="app7">
+      <my-component></my-component>
+    </div>
+
+    <script>
+    Vue.component('myComponent', {
+      template: `
+        <div>Here is my custom component!</div>
+      `
+    })
+
+    var app7 = new Vue({
+      el: '#app7'
+    })
+    </script>
+
+    <p>This is a very simple example of component usage.</p>
+
+    <hr />
+
+
+
+
+    <h3>Parent Child Component Communication</h3>
+
+    <p>Demonstrate passing data from the parent scope into child components using props:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="app8"&gt;<br />
+        &lt;ol&gt;<br />
+          &lt;!-- Render todo items --&gt;<br />
+          &lt;todo-item<br />
+            v-for="item in todos"<br />
+            :todo="item"<br />
+            :key="item.id"<br />
+          &gt;&lt;/todo-item&gt;<br />
+        &lt;/ol&gt;<br />
+      &lt;/div&gt;
+
+      --------------------------
+      // Vue Component
+      Vue.component('todo-item', {
+        template: `
+          &lt;li&gt;{{ todo.text }}&lt;/li&gt;
+        `,
+        // Accept prop from parent
+        props: ['todo']
+      })
+
+      // Vue Instance
+      var app8 = new Vue({
+        el: '#app8',
+        data: {
+          todos: [
+            {id: 0, text: 'Go to the store'},
+            {id: 1, text: 'Go to work'},
+            {id: 2, text: 'Walk the dog'},
+          ]
+        }
+      })
+    </code></pre>
+
+    <div id="app8">
+      <ol>
+        <!-- Render todo items -->
+        <todo-item
+          v-for="item in todos"
+          :todo="item"
+          :key="item.id"
+        ></todo-item>
+      </ol>
+    </div>
+
+    <script>
+    // Vue Component
+    Vue.component('todo-item', {
+      template: `
+        <li>{{ todo.text }}</li>
+      `,
+      // Accept prop from parent
+      props: ['todo']
+    })
+
+    // Vue Instance
+    var app8 = new Vue({
+      el: '#app8',
+      data: {
+        todos: [
+          {id: 0, text: 'Go to the store'},
+          {id: 1, text: 'Go to work'},
+          {id: 2, text: 'Walk the dog'},
+        ]
+      }
+    })
+    </script>
+
+    <p>Using components separates the app into smaller units and helps keep development manageable.</p>
+
+    <hr />
+
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

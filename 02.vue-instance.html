@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>The Vue Instance</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>The Vue Instance</h1>
+
+
+    <h3>Vue Constructor Function</h3>
+
+    <p>We can create a <b>root Vue instance</b> with the <b>Vue</b> constructor function:</p>
+
+    <pre><code class="language-javascript">
+      var vm = new Vue({
+        // options
+      })
+    </code></pre>
+
+    <script>
+    var vm = new Vue({
+      // options
+    })
+    </script>
+
+    <p>We often use the variable <b>vm</b> to refer to our Vue instances.</p>
+
+    <hr />
+
+
+
+
+    <h3>Extending the Vue Constructor</h3>
+
+    <p>The Vue constructor can be <b>extended</b> to create reusable <b>component constructors</b> with pre-defined options:</p>
+
+    <pre><code class="language-javascript">
+      var myComponent = Vue.extend({
+        // extension options
+      })
+
+      var myComponentInstance = new myComponent()
+    </code></pre>
+
+    <script>
+    var myComponent = Vue.extend({
+      // extension options
+    })
+
+    var myComponentInstance = new myComponent()
+    </script>
+
+    <p>All Vue components are essentially extended Vue intances.</p>
+
+    <hr />
+
+
+
+
+    <h3>Properties and Methods</h3>
+
+    <p>Each Vue instance proxies all the properties found in its <b>data</b> object:</p>
+
+    <pre><code class="language-javascript">
+      var data = {
+        a: 1
+      }
+
+      var vm = new Vue({
+        // bind the data object of the Vue instance to the data object created above
+        data: data
+      })
+
+      // Test for consistency
+      console.log(vm.a === data.a); // true
+
+      vm.a = 2;
+      console.log(data.a === 2); // true
+
+      data.a = 3;
+      console.log(vm.a === 3); // true
+    </code></pre>
+
+    <script>
+    var data = {
+      a: 1
+    }
+
+    var vm = new Vue({
+      // bind the data object of the Vue instance to the data object created above
+      data: data
+    })
+
+    // Test for consistency
+    console.log(vm.a === data.a); // true
+
+    vm.a = 2;
+    console.log(data.a === 2); // true
+
+    data.a = 3;
+    console.log(vm.a === 3); // true
+    </script>
+
+    <p></p>
+
+    <hr />
+
+
+
+
+    <h3>Instance Properties and Methods</h3>
+
+    <p>Vue instances expose a number of useful instance properties and methods. These properties and methods are prefixed with the <b>$</b> to differentiate them from proxied data properties:</p>
+
+    <pre><code class="language-javascript">
+    &lt;div id="example"&gt;&lt;/div&gt;
+    ------------------------------------
+    var myData = { a : 1 }
+
+    var vm = new Vue({
+      data: myData,
+      el: '#example'
+    })
+
+    // Access the Vue instance using $
+    console.log(vm.$data === myData); // true
+    console.log(vm.$el === document.getElementById("example")); // true
+
+    // $watch is an instance method
+    vm.$watch('a', function(newVal, oldVal) {
+      // this callback will be called when 'vm.a' changes
+      console.log('vm.a has changed!');
+    })
+
+    // Changing 'vm.a' now changes myData.a
+    vm.a = 3;
+    </code></pre>
+
+    <div id="example"></div>
+
+    <script>
+    var myData = { a : 1 }
+
+    var vm = new Vue({
+      data: myData,
+      el: '#example'
+    })
+
+    // Access the Vue instance using $
+    console.log(vm.$data === myData); // true
+    console.log(vm.$el === document.getElementById("example")); // true
+
+    // $watch is an instance method
+    vm.$watch('a', function(newVal, oldVal) {
+      // this callback will be called when 'vm.a' changes
+      console.log('vm.a has changed!');
+    })
+
+    // Changing 'vm.a' now changes myData.a
+    vm.a = 3;
+    </script>
+
+    <p>Do NOT use <b>arrow functions</b> on an instance property or callback. Arrow functions are bound to the parent context, so the 'this' keyword will NOT point to the Vue instance.</p>
+
+    <hr />
+
+
+
+
+    <h3>Instance Lifecycle Hooks</h3>
+
+    <p>Each Vue instance goes through a series of initialization steps when it is created. Throughout this process it will invoke (call) some <b>lifecycle hooks</b> that give us an opportunity to execute custom logic. Example: the created() hook:</p>
+
+    <pre><code class="language-javascript">
+      var vm = new Vue({
+        data: {
+          message: 'Hello There'
+        },
+
+        created() {
+          console.log(this.message);
+        }
+      })
+    </code></pre>
+
+    <script>
+    var vm = new Vue({
+      data: {
+        message: 'Hello There'
+      },
+
+      created() {
+        console.log(this.message);
+      }
+    })
+    </script>
+
+    <p>Other lifecycle hooks include <b>mounted</b>, <b>updated</b>, and <b>destroyed</b>. All lifecycle hooks are called with their 'this' context pointing to the Vue instance invoking it.</p>
+
+    <p><b>Note: </b>custom logic for components is split among these lifecycle hooks.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+
+  </body>
+</html>

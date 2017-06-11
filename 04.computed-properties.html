@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Computed Properties and Watchers</title>
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+    <!-- Axios and Lodash for Example 6 -->
+    <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Computed Properties and Watchers</h1>
+
+
+    <h2>Computed Properties</h2>
+
+    <p>Computed properties are recommended for complex logic:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;p&gt;Original Message: {{ message }}&lt;/p&gt;<br />
+        &lt;p&gt;Computed Reversed Message: {{ reversedText }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      --------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          message: 'This is a message!'
+        },
+        computed: {
+          reversedText() {
+            return this.message.split('').reverse().join('');
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example1">
+      <p>Original Message: {{ message }}</p>
+      <p>Computed Reversed Message: {{ reversedText }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        message: 'This is a message!'
+      },
+      computed: {
+        reversedText() {
+          return this.message.split('').reverse().join('');
+        }
+      }
+    })
+    </script>
+
+    <p>Data is bound to computed properties in templates just like a normal property. The computed property depends on the data property. If the data property changes, then so will the computed property.</p>
+
+    <hr />
+
+
+
+
+    <h3>Computed Caching vs Methods</h3>
+
+    <p>The example above can also be achieved by invoking a method in the expression:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;p&gt;Original Message: {{ message }}&lt;/p&gt;<br />
+        &lt;p&gt;Reversed Message: {{ reverseText() }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ----------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          message: 'This is another message!'
+        },
+        methods: {
+          reverseText() {
+            return this.message.split('').reverse().join('');
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example2">
+      <p>Original Message: {{ message }}</p>
+      <p>Reversed Message: {{ reverseText() }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        message: 'This is another message!'
+      },
+      methods: {
+        reverseText() {
+          return this.message.split('').reverse().join('');
+        }
+      }
+    })
+    </script>
+
+    <p>Computed properties are <b>cached based on their dependencies.</b> A computed property will only re-evaluate when some of its dependencies have changed.</p>
+
+    <hr />
+
+
+
+
+    <h3>Computed vs Watched Property</h3>
+
+    <p>A more generic way to watch for, and react to, changes on a Vue instance, is to use a <b>watch callback:</b></p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;p&gt;{{ fullName }}&lt;/p&gt;<br />
+  <br />
+        &lt;button @click="updateFirstName"&gt;Change First Name&lt;/button&gt;<br />
+        &lt;button @click="updateLastName"&gt;Change Last Name&lt;/button&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          firstName: 'John',
+          lastName: 'Doe',
+          fullName: 'John Doe'
+        },
+        watch: {
+          firstName(value) {
+            this.fullName = value + ' ' + this.lastName;
+          },
+          lastName(value) {
+            this.fullName = this.firstName + ' ' + value;
+          }
+        },
+        methods: {
+          updateFirstName() {
+            this.firstName = 'Henry';
+          },
+          updateLastName() {
+            this.lastName = 'Moe';
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example3">
+      <p>{{ fullName }}</p>
+
+      <button @click="updateFirstName">Change First Name</button>
+      <button @click="updateLastName">Change Last Name</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        firstName: 'John',
+        lastName: 'Doe',
+        fullName: 'John Doe'
+      },
+      watch: {
+        firstName(value) {
+          this.fullName = value + ' ' + this.lastName;
+        },
+        lastName(value) {
+          this.fullName = this.firstName + ' ' + value;
+        }
+      },
+      methods: {
+        updateFirstName() {
+          this.firstName = 'Henry';
+        },
+        updateLastName() {
+          this.lastName = 'Moe';
+        }
+      }
+    })
+    </script>
+
+    <p><b>Watch callbacks</b> are imperative and repetitive. It is generally recommended to use computed properties instead (see below). However, watchers do have their uses. <b>More on watchers in 'watchers' section below!</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Computed Properties</h3>
+
+    <p>This example is the same as above except that it uses a <b>computed property:</b></p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;p&gt;{{ fullName }}&lt;/p&gt;<br />
+  <br />
+        &lt;button @click="updateFirst"&gt;Change First Name&lt;/button&gt;<br />
+        &lt;button @click="updateLast"&gt;Change Last Name&lt;/button&gt;<br />
+      &lt;/div&gt;
+      ----------------------------
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          firstName: 'John',
+          lastName: 'Doe'
+        },
+        computed: {
+          fullName() {
+            return this.firstName + ' ' + this.lastName;
+          }
+        },
+        methods: {
+          updateFirst() {
+            this.firstName = 'Henry';
+          },
+          updateLast() {
+            this.lastName = "Moe"
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <p>{{ fullName }}</p>
+
+      <button @click="updateFirst">Change First Name</button>
+      <button @click="updateLast">Change Last Name</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        firstName: 'John',
+        lastName: 'Doe'
+      },
+      computed: {
+        fullName() {
+          return this.firstName + ' ' + this.lastName;
+        }
+      },
+      methods: {
+        updateFirst() {
+          this.firstName = 'Henry';
+        },
+        updateLast() {
+          this.lastName = "Moe"
+        }
+      }
+    })
+    </script>
+
+    <p><b>Computed properties</b> are a better option when watching for changes on a Vue instance.</p>
+
+    <hr />
+
+
+
+
+    <h3>Computed Setter</h3>
+
+    <p>Computed properties are by default getter-only, but yo can provide a setter when needed:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;p&gt;{{ fullName }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      --------------------------------
+      var vm = new Vue({
+        el: '#example5',
+        data: {
+          firstName: 'Ben',
+          lastName: 'Coding'
+        },
+        computed: {
+          fullName: {
+            get() {
+              return this.firstName + ' ' + this.lastName;
+            },
+            set(newValue) {
+              var names = newValue.split(' ');
+              this.firstName = names[0];
+              this.lastName = names[names.length - 1];
+            }
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example5">
+      <p>{{ fullName }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5',
+      data: {
+        firstName: 'Ben',
+        lastName: 'Coding'
+      },
+      computed: {
+        fullName: {
+          get() {
+            return this.firstName + ' ' + this.lastName;
+          },
+          set(newValue) {
+            var names = newValue.split(' ');
+            this.firstName = names[0];
+            this.lastName = names[names.length - 1];
+          }
+        }
+      }
+    })
+    </script>
+
+    <p>In console you can now run <b>vm.fullName = "New Name"</b> and <b>vm.firstName</b> so that <b>vm.lastName</b> are updated accordingly.</p>
+
+    <hr />
+
+
+
+
+    <h2>Watchers</h2>
+
+    <p>Watchers are most useful when you want to perform asynchronous or expensive operations in response to data changes. <b>Note: </b>the following example from the <a href="https://vuejs.org/v2/guide/computed.html#Watchers">Vuejs Guide</a> uses Lodash for its <b>._debounce</b> function, and Axios for ajax requests to the <b>yesno.wtf/api</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+        &lt;input v-model="question" /&gt;<br />
+        &lt;p&gt;{{ answer }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          message: 'Ask a yes/no question!',
+          question: '',
+          answer: 'I cannot give an answer until a question is asked!'
+        },
+        watch: {
+          question: function(value) {
+            this.answer = 'Waiting for you to stop typing...';
+            this.getAnswer();
+          }
+        },
+        methods: {
+          getAnswer:_.debounce( // Limit ajax requests
+            function() {
+              if (this.question.indexOf('?') == -1) {
+                this.answer = "Don't forget the question mark!"
+                return;
+              }
+              this.answer = 'Thinking...'
+              var vm = this;
+              axios.get('https://yesno.wtf/api')
+              .then(function(response) {
+                vm.answer = _.capitalize(response.data.answer)
+              })
+              .catch(function(error) {
+                vm.answer = 'Error! Could not reach the API. ' + error;
+              })
+            }, 1000)
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <p>{{ message }}</p>
+      <input v-model="question" />
+      <p>{{ answer }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        message: 'Ask a yes/no question!',
+        question: '',
+        answer: 'I cannot give an answer until a question is asked!'
+      },
+      watch: {
+        question: function(value) {
+          this.answer = 'Waiting for you to stop typing...';
+          this.getAnswer();
+        }
+      },
+      methods: {
+        getAnswer:_.debounce( // Limit ajax requests
+          function() {
+            if (this.question.indexOf('?') == -1) {
+              this.answer = "Don't forget the question mark!"
+              return;
+            }
+            this.answer = 'Thinking...'
+            var vm = this;
+            axios.get('https://yesno.wtf/api')
+            .then(function(response) {
+              vm.answer = _.capitalize(response.data.answer)
+            })
+            .catch(function(error) {
+              vm.answer = 'Error! Could not reach the API. ' + error;
+            })
+          }, 1000)
+      }
+    })
+    </script>
+
+    <p>In the example above we use the <b>watch</b> option to perform an asynchronous operation, limit ajax requests, and set intermediary states. This is not possible using a computed property.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

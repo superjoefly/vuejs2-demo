@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Components</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+    <style>
+    .myComponent {
+      color: orange;
+    }
+    .something-cool {
+      color: lime;
+      background-color: white;
+      font-family: "Lucida Console", Monaco, monospace;
+      list-style-type: none;
+    }
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Components</h1>
+
+    <hr />
+
+    <h2>Using Components</h2>
+
+    <h3>Registration</h3>
+
+    <p>To register global components, we can use <b>Vue.component(tagName, options)</b>. Once registered, components can be used in an instance's template as a custom element. Be sure to register the component BEFORE you instantiate the root Vue instance:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example8"&gt;<br />
+        &lt;p&gt;Checkbox:&lt;/p&gt;<br />
+        &lt;input<br />
+          type="checkbox"<br />
+          v-model="toggle"<br />
+          :true-value="a"<br />
+          :false-value="b"/&gt;<br />
+  <br />
+        &lt;p&gt;Value: {{toggle}}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -----------------------------
+      // Global Registration
+      Vue.component('my-component', {
+        template: `
+          &lt;div&gt;This is a custom component!&lt;/div&gt;
+        `
+      });
+      var vm = new Vue({
+        el: '#example1'
+      });
+    </code></pre>
+
+    <div id="example1">
+      <my-component class="myComponent"></my-component>
+    </div>
+
+    <script>
+    // Global Registration
+    Vue.component('my-component', {
+      template: `
+        <div>This is a custom component!</div>
+      `
+    });
+    var vm = new Vue({
+      el: '#example1'
+    });
+    </script>
+
+    <p>Note: Vue does not enfore the W3C rules for custom tag names (all lowercase, must contain a hyphen), though it is still considered a good practice.</p>
+
+    <hr />
+
+
+
+
+    <h3>Local Registration</h3>
+
+    <p>To make a component available only in the scope of another instance/component, we can register the component in <b>component</b> option of the Vue instance:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;my-component class="myComponent" :alert="alertMe"&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      --------------------------------
+      var childComponent = {
+        template: `
+          &lt;div @click="alert"&gt;This is the child component!&lt;/div&gt;
+        `,
+        methods: {
+          alert() {
+            alert("Hello There!");
+          }
+        }
+      };
+      var vm = new Vue({
+        el: '#example2',
+        // Local Registration
+        components: {
+          'my-component': childComponent
+        },
+        methods: {
+          alertMe() {
+            alert('Hello There!');
+          }
+        }
+      });
+    </code></pre>
+
+    <div id="example2">
+      <my-component class="myComponent" :alert="alertMe"></my-component>
+    </div>
+
+    <script>
+    var childComponent = {
+      template: `
+        <div @click="alert">This is the child component!</div>
+      `,
+      methods: {
+        alert() {
+          alert("Hello There!");
+        }
+      }
+    };
+    var vm = new Vue({
+      el: '#example2',
+      // Local Registration
+      components: {
+        'my-component': childComponent
+      },
+
+      methods: {
+        alertMe() {
+          alert('Hello There!');
+        }
+      }
+    });
+    </script>
+
+    <p>The above example also demonstrates an event on the child component triggering an event in the parent scope.</p>
+
+    <hr />
+
+
+
+
+    <h3>DOM Template Parsing Caveats</h3>
+
+    <p>Due to the inherent functionality of how HTML works, there are some restrictions as to how some elements may be used in components. Some elements have restrictions on what elements can be used inside them, so they will not accept a component with a custom name. One workaround is to use the special <b>is</b> attribute. Example:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;table&gt;<br />
+          &lt;tr is="my-row"&gt;&lt;/tr&gt;<br />
+        &lt;/table&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var myRow = {
+      template: `
+        &lt;tr&gt;This is a table row!&lt;/tr&gt;
+      `
+      };
+      var vm = new Vue({
+        el: '#example3',
+        components: {
+          'my-row': myRow
+        }
+      });
+    </code></pre>
+
+    <div id="example3">
+      <table>
+        <tr is="my-row"></tr>
+      </table>
+    </div>
+
+    <script>
+    var myRow = {
+    template: `
+      <tr>This is a table row!</tr>
+    `
+    };
+    var vm = new Vue({
+      el: '#example3',
+      components: {
+        'my-row': myRow
+      }
+    });
+    </script>
+
+    <p>It is recommended to use string templates whenever possible.</p>
+
+    <hr />
+
+
+
+
+    <h3><b>data</b> Must Be a Function</h3>
+
+    <p>Most options that can be passed into a Vue constructor can also be passed into a component, however, the <b>data</b> option MUST BE A FUNCTION:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;my-component&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      Vue.component('my-component', {
+        template: `
+          &lt;p&gt;Message: {{ message }}&lt;/p&gt;
+        `,
+        data() {
+          return {
+            message: 'This is a message in a component!'
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example4'
+      });
+    </code></pre>
+
+    <div id="example4">
+      <my-component></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <p>Message: {{ message }}</p>
+      `,
+      data() {
+        return {
+          message: 'This is a message in a component!'
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example4'
+    });
+    </script>
+
+    <p>The <b>data</b> function in a component returns an object.</p>
+
+    <hr />
+
+
+
+
+    <h3>Returning Data as an Object</h3>
+
+    <p>The following example show the difference between using data as a function that returns a <b>single</b> object, and using data as a function that returns a <b>new object </b>for each component:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;p&gt;Data as Function: (returns the same object)&lt;/p&gt;<br />
+        &lt;counter&gt;&lt;/counter&gt;<br />
+        &lt;counter&gt;&lt;/counter&gt;<br />
+        &lt;counter&gt;&lt;/counter&gt;<br />
+        &lt;p&gt;Data Returning Object (returns separate objects)&lt;/p&gt;<br />
+        &lt;another-counter&gt;&lt;/another-counter&gt;<br />
+        &lt;another-counter&gt;&lt;/another-counter&gt;<br />
+        &lt;another-counter&gt;&lt;/another-counter&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var data = { counter: 0};
+
+      Vue.component('counter', {
+        template: `
+          &lt;button @click="counter += 1"&gt;{{ counter }}&lt;/button&gt;
+        `,
+        data() {
+          return data
+        }
+      });
+      Vue.component('another-counter', {
+        template: `
+          &lt;button @click="counter2 += 1"&gt;{{ counter2 }}&lt;/button&gt;
+        `,
+        data() {
+          return {
+            counter2: 0
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example5'
+      });
+    </code></pre>
+
+    <div id="example5">
+      <p>Data as Function: (returns the same object)</p>
+      <counter></counter>
+      <counter></counter>
+      <counter></counter>
+      <p>Data Returning Object (returns separate objects)</p>
+      <another-counter></another-counter>
+      <another-counter></another-counter>
+      <another-counter></another-counter>
+    </div>
+
+    <script>
+    var data = { counter: 0};
+
+    Vue.component('counter', {
+      template: `
+        <button @click="counter += 1">{{ counter }}</button>
+      `,
+      data() {
+        return data
+      }
+    });
+    Vue.component('another-counter', {
+      template: `
+        <button @click="counter2 += 1">{{ counter2 }}</button>
+      `,
+      data() {
+        return {
+          counter2: 0
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example5'
+    });
+    </script>
+
+    <p>The first example returns the same data object for all three counters, so incrementing one counter, increments them all. The second example returns a separate data object for each counter, therefore they can be incremented independently.</p>
+
+    <hr />
+
+
+
+
+    <h3>Composing Components</h3>
+
+    <p>Vue.js components are meant to be used together. Parent and child components can communicate via props and events. This relationship can be summarized as <b>props-down</b>, and <b>events-up</b>. The parent passes data down to the child via <b>props</b>, and the child sends messages to the parent via <b>events</b>.</p>
+
+    <p>A <b>prop</b> is a custom attribute for passing information from parent components. In order for the child to use the prop, it must be accepted as a prop in the childs <b>prop</b> option:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;!-- Parent Scope --&gt;<br />
+        &lt;input type="text" v-model="message" /&gt;<br />
+  <br />
+        &lt;!-- Dynamically bind prop to data on the parent --&gt;<br />
+        &lt;!-- Changes in parent will flow down to child --&gt;<br />
+        &lt;child-component :message = 'message'&gt;&lt;/child-component&gt;<br />
+  <br />
+        &lt;!-- Define the value of message on the fly --&gt;<br />
+        &lt;!-- Changes in the parent will not affect child --&gt;<br />
+        &lt;child-component message='Hello Again!'&gt;&lt;/child-component&gt;<br />
+      &lt;/div&gt;
+      ------------------------------------
+      Vue.component('child-component', {
+        template: `
+          &lt;div&gt;&lt;p&gt;{{ message }}&lt;/p&gt;&lt;/div&gt;
+        `,
+        props: ['message']
+      });
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          message: 'Dynamically Bound!'
+        }
+      });
+    </code></pre>
+
+    <div id="example6">
+      <!-- Parent Scope -->
+      <input type="text" v-model="message" />
+
+      <!-- Dynamically bind prop to data on the parent -->
+      <!-- Changes in parent will flow down to child -->
+      <the-child :message = 'message'></the-child>
+
+      <p>--------------------</p>
+
+      <!-- Define the value of message on the fly -->
+      <!-- Changes in the parent will not affect child -->
+      <the-child message='Hello Again!'></the-child>
+    </div>
+
+    <script>
+    Vue.component('the-child', {
+      template: `
+        <div><p>{{ message }}</p></div>
+      `,
+      props: ['message']
+    });
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        message: 'Dynamically Bound!'
+      }
+    });
+    </script>
+
+    <p>When the prop is <b>dynamically bound</b> to the parent using <b>v-bind</b>, changes in the parent scope will flow down to the child. When the value of the prop is defined <b>inline</b> of the child component, changes in the parent will not affect the child.</p>
+
+    <p>Note: HTML attributes are case insensitive, so when using non-string templates, camelCased prop names need to use their kebab-case equivalents. The rule would then be <b>camelCase in javascript; kebab-case in HTML</b>. This limitation does not apply if using string templates.</p>
+
+    <hr />
+
+
+
+
+    <h2>Props and One-Way Data Flow</h2>
+
+    <p>All props for a one-way binding from the parent to the child. Changes in the parent will flow down to the child, but not the other way around. This prevents child mutation of the parent.</p>
+
+    <p>Whenever a parent component is updated, props on the child component will be refreshed with the latest value. This means that you should not attemp to mutate a prop inside a child component.</p>
+
+    <p>Two cases where it is tempting to mutate a prop:</p>
+
+    <ol>
+      <li>When the prop is only used to pass in an initial value...the child component simply wants to use it as a local data property.</li>
+      <li>When the prop is passed in as a raw value that needs to be transformed.</li>
+    </ol>
+
+    <p>The work-arounds for these two use-cases are demonstrated below:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;my-component<br />
+          :initial-counter = 'initialCounter'<br />
+          :parent-message = 'parentMessage'<br />
+        &gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      -------------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;p&gt;Use Case 1: Set a local data property&lt;/p&gt;<br />
+          &lt;button @click="counter += 1"&gt;Increment&lt;/button&gt;<br />
+          &lt;p&gt;{{ counter }}&lt;/p&gt;<br />
+<br />
+          &lt;p&gt;Use Case 2: Use a computed property:&lt;/p&gt;<br />
+          &lt;p&gt;{{ message }}&lt;/p&gt;<br />
+        &lt;/div&gt;
+        `,
+
+        // Note: once you accept the prop into the component, it MUST BE BOUND to the component using V-BIND! (see above).
+        // Then it can be manipulated within the component
+        props: ['initialCounter', 'parentMessage'],
+        data() {
+          return {
+            counter: this.initialCounter
+          }
+        },
+        computed: {
+          message() {
+            return this.parentMessage.toUpperCase();
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example7',
+        data: {
+          initialCounter: 0,
+          parentMessage: 'This is a message!'
+        }
+      });
+    </code></pre>
+
+    <div id="example7">
+      <my-component
+        :initial-counter = 'initialCounter'
+        :parent-message = 'parentMessage'
+      ></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+      <div>
+        <p>Use Case 1: Set a local data property</p>
+        <button @click="counter += 1">Increment</button>
+        <p>{{ counter }}</p>
+
+        <p>Use Case 2: Use a computed property:</p>
+        <p>{{ message }}</p>
+      </div>
+      `,
+
+      // Note: once you accept the prop into the component, it MUST BE BOUND to the component using V-BIND! (see above).
+      // Then it can be manipulated within the component
+      props: ['initialCounter', 'parentMessage'],
+      data() {
+        return {
+          counter: this.initialCounter
+        }
+      },
+      computed: {
+        message() {
+          return this.parentMessage.toUpperCase();
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example7',
+      data: {
+        initialCounter: 0,
+        parentMessage: 'This is a message!'
+      }
+    });
+    </script>
+
+    <p>Note: <b>objects and arrays</b> in JavaScript are passed <b>by reference</b>. If the prop is an array or an object, mutating the array or object itself inside the child <b>will</b> affect the parent state!</p>
+
+    <hr />
+
+
+
+
+    <h3>Prop Validation</h3>
+
+    <p>A component can specify requirements for the props it is receiving, and if the requirement is not met, Vue will emit warnings:</p>
+
+    <p>Example from Vuejs.org:</p>
+
+    <pre><code class="language-javascript">
+
+      Vue.component("example", {
+        props: {
+          // basic type check ('null' means accept any type)
+          propA: Number,
+          // multiple possible types
+          propB: [String, Number],
+          // a required string
+          propC: {
+            type: String,
+            required: true
+          },
+          // a number with default value
+          propD: {
+            type: Number,
+            default: 100
+          },
+          // object/array defaults should be returned from a
+          // factory function
+          propE: {
+            type: Object,
+            default: function() {
+              return { message: 'hello' }
+            }
+          },
+          // custom validator function
+          propF: {
+            validator: function(value) {
+              return value > 10
+            }
+          }
+        }
+      })
+
+    </code></pre>
+
+    <script>
+    Vue.component("example", {
+      props: {
+        // basic type check ('null' means accept any type)
+        propA: Number,
+        // multiple possible types
+        propB: [String, Number],
+        // a required string
+        propC: {
+          type: String,
+          required: true
+        },
+        // a number with default value
+        propD: {
+          type: Number,
+          default: 100
+        },
+        // object/array defaults should be returned from a
+        // factory function
+        propE: {
+          type: Object,
+          default: function() {
+            return { message: 'hello' }
+          }
+        },
+        // custom validator function
+        propF: {
+          validator: function(value) {
+            return value > 10
+          }
+        }
+      }
+    });
+    </script>
+
+    <p>The <b>type</b> can be one of the following native constructors:</p>
+
+    <ul>
+      <li>String</li>
+      <li>Number</li>
+      <li>Boolean</li>
+      <li>Function</li>
+      <li>Object</li>
+      <li>Array</li>
+      <li>Symbol</li>
+    </ul>
+
+    <p>Also, <b>type</b> can be a custom constructor function and the assertion will be made with an <b>instance of</b> check.</p>
+
+    <hr />
+
+
+
+
+    <h2>Custom Events</h2>
+
+    <p><b>Custom events</b> are used to communicate to the parent that changes have been made in the child.</p>
+
+    <h3>Using <b>v-on</b> with Custom Events</h3>
+
+    <p>Every Vue instance can listen to events using <b>$on(eventName)</b> and trigger events using <b>$emit(eventName)</b>.</p>
+
+    <p>Note: <b>$on</b> and <b>$emit</b> are NOT aliases for <b>addEventListener</b> and <b>dispatchEvent</b>.</p>
+
+    <p>A parent component can listen to the events emitted from a child component using <b>v-on</b> directly in the template where the child component is used.</p>
+
+    <p>Note: You can NOT use <b>$on</b> to listen to event emitted by children. You MUST use <b>v-on</b> directly in the template:</p>
+
+    <p>The following example uses the shorthand <b>@</b> in place of <b>v-on</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example8"&gt;<br />
+        &lt;!-- Listen for the event on the component --&gt;<br />
+        &lt;p&gt;Child:&lt;/p&gt;<br />
+        &lt;my-counter<br />
+          @increment="increaseTotal"<br />
+          @decrement="decreaseTotal"<br />
+          ref="refToCounter"<br />
+        &gt;&lt;/my-counter&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;p&gt;Parent:&lt;/p&gt;<br />
+        &lt;button @click="clearCounters"&gt;Clear Counters&lt;/button&gt;<br />
+        &lt;p&gt;Total: {{ total }}&lt;/p&gt;<br />
+  <br />
+        &lt;!-- If we want to listen for native events on a component, we can use the .native modifier for v-on (see above). --&gt;<br />
+        &lt;orange-div @click.native="clearTotal"&gt;&lt;/orange-div&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      Vue.component('my-counter', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;button @click="decrement"&gt;{{ anotherCounter }}&lt;/button&gt;<br />
+          &lt;button @click="increment"&gt;{{ counter }}&lt;/button&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            counter: 0,
+            anotherCounter: 0
+          }
+        },
+        methods: {
+          increment() {
+            this.counter++;
+            // emit the event
+            this.$emit('increment');
+          },
+          decrement() {
+            this.anotherCounter--;
+            // emit the event
+            this.$emit('decrement');
+          },
+          clear() {
+            this.counter = 0;
+            this.anotherCounter = 0;
+          }
+        }
+      });
+
+      Vue.component('orange-div', {
+        template: `
+        &lt;div style="height: 100px; width: 100px; background-color: orange"&gt;&lt;/div&gt;
+        `
+      });
+
+      var vm = new Vue({
+        el: '#example8',
+        data: {
+          total: 0
+        },
+        methods: {
+          increaseTotal() {
+            this.total++;
+          },
+          decreaseTotal() {
+            this.total--;
+          },
+          clearCounters() {
+            this.$refs.refToCounter.clear();
+          },
+          clearTotal() {
+            this.total = 0;
+          }
+        }
+      });
+    </code></pre>
+
+    <div id="example8">
+      <!-- Listen for the event on the component -->
+      <p>Child:</p>
+      <my-counter
+        @increment="increaseTotal"
+        @decrement="decreaseTotal"
+        ref="refToCounter"
+      ></my-counter>
+      <br />
+      <p>Parent:</p>
+      <button @click="clearCounters">Clear Counters</button>
+      <p>Total: {{ total }}</p>
+
+      <!-- If we want to listen for native events on a component, we can use the .native modifier for v-on (see above). -->
+
+      <p><b>Native Event</b>: clicking on the orange Div will use a native event to clear the total above!</p>
+      <orange-div @click.native="clearTotal"></orange-div>
+    </div>
+
+    <script>
+    Vue.component('my-counter', {
+      template: `
+        <div>
+          <button @click="decrement">{{ anotherCounter }}</button>
+          <button @click="increment">{{ counter }}</button>
+        </div>
+      `,
+      data() {
+        return {
+          counter: 0,
+          anotherCounter: 0
+        }
+      },
+      methods: {
+        increment() {
+          this.counter++;
+          // emit the event
+          this.$emit('increment');
+        },
+        decrement() {
+          this.anotherCounter--;
+          // emit the event
+          this.$emit('decrement');
+        },
+        clear() {
+          this.counter = 0;
+          this.anotherCounter = 0;
+        }
+      }
+    });
+
+    Vue.component('orange-div', {
+      template: `
+      <div style="height: 100px; width: 100px; background-color: orange"></div>
+      `
+    });
+
+    var vm = new Vue({
+      el: '#example8',
+      data: {
+        total: 0
+      },
+      methods: {
+        increaseTotal() {
+          this.total++;
+        },
+        decreaseTotal() {
+          this.total--;
+        },
+        clearCounters() {
+          this.$refs.refToCounter.clear();
+        },
+        clearTotal() {
+          this.total = 0;
+        }
+      }
+    });
+    </script>
+
+    <p>Note: in the example above, we use <b>$refs</b> to directly access the child from the parent, and call a method to clear the counters. However, <b>$refs</b> are only populated after the component has been rendered, and it is not reactive. It is recommended to avoid <b>$refs</b> in templates or computed properties.</p>
+
+
+    <hr />
+
+
+
+
+    <h3><b>.sync</b> Modifier</h3>
+
+    <p>When a child component mutates a prop that has <b>.sync</b>, the value change will be reflected in the parent. As of Vue 2.3, the <b>.sync</b> modifier automatically expands into an additional <b>v-on</b> listener:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example9"&gt;<br />
+        &lt;p&gt;Parent: {{ parentMessage }}&lt;/p&gt;<br />
+        &lt;sync-component :parent-message.sync = "parentMessage"&gt;&lt;/sync-component&gt;<br />
+      &lt;/div&gt;
+      ------------------------------------
+      Vue.component('sync-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;p&gt;Child: {{ parentMessage }}&lt;/p&gt;<br />
+          &lt;button @click="changeMessage"&gt;Change!&lt;/button&gt;<br />
+        &lt;/div&gt;
+        `,
+        props: ['parentMessage'],
+        methods: {
+          changeMessage(value) {
+            this.parentMessage = 'Message Changed!';
+            this.$emit('update:parentMessage', this.parentMessage);
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example9',
+        data: {
+          parentMessage: 'This is a message!'
+        }
+      });
+    </code></pre>
+
+    <div id="example9">
+      <p>Parent: {{ parentMessage }}</p>
+      <sync-component :parent-message.sync = "parentMessage"></sync-component>
+    </div>
+
+    <script>
+    Vue.component('sync-component', {
+      template: `
+        <div>
+          <p>Child: {{ parentMessage }}</p>
+          <button @click="changeMessage">Change!</button>
+        </div>
+      `,
+      props: ['parentMessage'],
+      methods: {
+        changeMessage(value) {
+          this.parentMessage = 'Message Changed!';
+          this.$emit('update:parentMessage', this.parentMessage);
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example9',
+      data: {
+        parentMessage: 'This is a message!'
+      }
+    });
+    </script>
+
+    <p>This works, but produces a Vue warning in console.</p>
+
+    <hr />
+
+
+
+    <h2>Form Input Components using Custom Events</h2>
+
+    <p>Custom events can be used to create custom inputs that work with <b>v-model</b>.</p>
+
+    <p>Remember: <b>v-model</b> is shorthand for <b>v-bind:value="something"</b> and <b>v-on:input = something = $event.target.value</b>.</>
+
+    <p>For a component to work with <b>v-model</b>, it should:</p>
+    <ul>
+      <li>accept a value prop</li>
+      <li>emit an <b>input</b> event with the new value</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example10"&gt;<br />
+        &lt;!-- message in parent --&gt;<br />
+        &lt;p&gt;Message: {{ message }}&lt;/p&gt;<br />
+        &lt;my-component2 v-model="message"&gt;&lt;/my-component2&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      Vue.component('my-component2', {
+        // input in component
+        template: `
+        &lt;input type="text"<br />
+          :value="message"<br />
+          @input="updateMessage($event.target.value)"<br />
+        /&gt;
+        `,
+        props: ['message'],
+        methods: {
+          updateMessage(message) {
+            this.$emit('input', message);
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example10',
+        data: {
+          message: ''
+        }
+      });
+    </code></pre>
+
+    <p>Type some text into the input field!</p>
+
+    <div id="example10">
+      <!-- message in parent -->
+      <p>Message: {{ message }}</p>
+      <my-component2 v-model="message"></my-component2>
+    </div>
+
+    <script>
+    Vue.component('my-component2', {
+      // input in component
+      template: `
+        <input type="text"
+          :value="message"
+          @input="updateMessage($event.target.value)"
+        />
+      `,
+      props: ['message'],
+      methods: {
+        updateMessage(message) {
+          this.$emit('input', message);
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example10',
+      data: {
+        message: ''
+      }
+    });
+    </script>
+
+    <p>In the example above, the message property in the parent is being updated, using v-model, by the input field in the child.</p>
+
+    <hr />
+
+
+
+
+    <h3>Customizing Component <b>v-model</b></h3>
+
+    <p>By default, <b>v-model</b> on a component uses <b>value</b> as the prop and <b>input</b> as the event. In cases where input types (such as checkboxes and radio buttons) may want to use the <b>value</b> prop for a different purpose, we can use the <b>model</b> option to avoid conflict:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example11"&gt;<br />
+        &lt;radio-component v-model="selected" value="Male"&gt;&lt;/radio-component&gt;<br />
+  <br />
+        &lt;radio-component v-model="selected" value="Female"&gt;&lt;/radio-component&gt;<br />
+  <br />
+        &lt;radio-component v-model="selected" value="Other"&gt;&lt;/radio-component&gt;<br />
+  <br />
+        &lt;p&gt;Selected: {{ selected }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ------------------------------------
+      Vue.component('radio-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;input<br />
+            type="radio"<br />
+            id="female"<br />
+            name="gender"<br />
+            :value="value"<br />
+            @change="radioSelected($event.target.value)"<br />
+          /&gt;<br />
+          &lt;label&gt;{{ label }}&lt;/label&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            label: this.value
+          }
+        },
+        model: {
+          prop: 'selected',
+          event: 'change'
+        },
+        props: {
+          value: String
+        },
+        methods: {
+          radioSelected(selected) {
+            this.$emit('change', selected);
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example11',
+        data: {
+          selected: ''
+        }
+      });
+    </code></pre>
+
+    <div id="example11">
+      <radio-component v-model="selected" value="Male"></radio-component>
+
+      <radio-component v-model="selected" value="Female"></radio-component>
+
+      <radio-component v-model="selected" value="Other"></radio-component>
+
+      <p>Selected: {{ selected }}</p>
+    </div>
+
+    <script>
+    Vue.component('radio-component', {
+      template: `
+      <div>
+        <input
+          type="radio"
+          id="female"
+          name="gender"
+          :value="value"
+          @change="radioSelected($event.target.value)"
+        />
+        <label>{{ label }}</label>
+      </div>
+      `,
+      data() {
+        return {
+          label: this.value
+        }
+      },
+      model: {
+        prop: 'selected',
+        event: 'change'
+      },
+      props: {
+        value: String
+      },
+      methods: {
+        radioSelected(selected) {
+          this.$emit('change', selected);
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example11',
+      data: {
+        selected: ''
+      }
+    });
+    </script>
+
+    <p>Setting <b>value</b> to type <b>String</b> allows using the <b>value</b> prop for a different purpose.</p>
+
+    <hr />
+
+
+
+
+    <h3>Sibling Component Communication</h3>
+
+    <p>Components that do not have a parent/child relationship can use an empty Vue instance as a central <b>event bus</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example12"&gt;<br />
+        &lt;sister&gt;&lt;/sister&gt;<br />
+        &lt;brother&gt;&lt;/brother&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var eventBus = new Vue();
+
+      Vue.component('sister', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;input type="text" v-model="sisterMessage" @keyup.enter="sendMessage" /&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            sisterMessage: ''
+          }
+        },
+        methods: {
+          sendMessage() {
+            this.sisterMessage = event.target.value;
+            eventBus.$emit('changeMessage', this.sisterMessage);
+          }
+        },
+        created() {
+          eventBus.$on('clear', function() {
+            this.sisterMessage = '';
+          }.bind(this));
+        }
+      });
+
+      Vue.component('brother', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;button<br />
+            @click="clearInput"<br />
+            style="margin: 10px;"<br />
+          &gt;Clear Input&lt;/button&gt;<br />
+      <br />
+          &lt;p&gt;Message from Sister: {{ brotherMessage }}&lt;/p&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            brotherMessage: ''
+          }
+        },
+        methods: {
+          clearInput() {
+            eventBus.$emit('clear');
+          }
+        },
+        created() {
+          eventBus.$on('changeMessage', (sisterMessage) => {
+            this.brotherMessage = sisterMessage;
+          })
+        }
+      });
+
+      var vm = new Vue({
+        el: '#example12'
+      });
+    </code></pre>
+
+    <hr />
+
+    <p>In the following example, a message is sent from the <b>sister</b> component to the <b>brother</b> component. Then, in the brother component, we emit an event to clear the input field. Both exchanges require the use of <b>$emit</b> and <b>$on</b>. The exchange is made through the use of the <b>eventBus</b>.</p>
+
+    <p>Type some text into the input and press <b>enter</b>:</p>
+
+    <div id="example12">
+      <sister></sister>
+      <brother></brother>
+    </div>
+
+    <script>
+    var eventBus = new Vue();
+
+    Vue.component('sister', {
+      template: `
+      <div>
+        <input type="text" v-model="sisterMessage" @keyup.enter="sendMessage" />
+      </div>
+      `,
+      data() {
+        return {
+          sisterMessage: ''
+        }
+      },
+      methods: {
+        sendMessage() {
+          this.sisterMessage = event.target.value;
+          eventBus.$emit('changeMessage', this.sisterMessage);
+        }
+      },
+      created() {
+        eventBus.$on('clear', function() {
+          this.sisterMessage = '';
+        }.bind(this));
+      }
+    });
+
+    Vue.component('brother', {
+      template: `
+      <div>
+
+        <button
+          @click="clearInput"
+          style="margin: 10px;"
+        >Clear Input</button>
+
+        <p>Message from Sister: {{ brotherMessage }}</p>
+
+      </div>
+      `,
+      data() {
+        return {
+          brotherMessage: ''
+        }
+      },
+      methods: {
+        clearInput() {
+          eventBus.$emit('clear');
+        }
+      },
+      created() {
+        eventBus.$on('changeMessage', (sisterMessage) => {
+          this.brotherMessage = sisterMessage;
+        })
+      }
+    });
+
+    var vm = new Vue({
+      el: '#example12'
+    });
+    </script>
+
+    <p>More complex state management can be achieved using a dedicated state-management pattern.</p>
+
+    <hr />
+
+
+    <h2>Content Distribution with Slots</h2>
+
+
+    <h3>Compilation Scope</h3>
+
+    <p>Vuejs uses a <b>content distribution</b> API that is modeled after the current <a href="https://github.com/w3c/webcomponents/blob/gh-pages/proposals/Slots-Proposal.md">Web Components spec draft</a>, using the <b>slot</b> element to serve as distribution outlets for the original content.</p>
+
+    <p>Note: everyting in the parent template is compiled in the parent scope; everything in the child template is compiled in the child scope. A parent's template is not aware of the state of a child component.</p>
+
+    <p>Note: if one needs to bind child-scope directives on a component root node, it should be done in the child component's own template:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example13"&gt;<br />
+        &lt;!-- This will NOT work --&gt;<br />
+        &lt;!-- &lt;child-component v-show="someChildProperty"&gt;&lt;/child-component&gt; --&gt;<br />
+  <br />
+        &lt;!-- Binding the child's property in the child's own template DOES work --&gt;<br />
+        &lt;child-component&gt;&lt;/child-component&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      Vue.component('child-component', {
+        template: `
+          &lt;div v-show="someChildProperty"&gt;This is the Child Component!&lt;/div&gt;
+        `,
+        data() {
+          return {
+            someChildProperty: true
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example13'
+      });
+    </code></pre>
+
+
+    <div id="example13">
+      <!-- This will NOT work -->
+      <!-- <child-component v-show="someChildProperty"></child-component> -->
+
+      <!-- Binding the child's property in the child's own template DOES work -->
+      <child-component></child-component>
+    </div>
+
+    <script>
+    Vue.component('child-component', {
+      template: `
+        <div v-show="someChildProperty">This is the Child Component!</div>
+      `,
+      data() {
+        return {
+          someChildProperty: true
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example13'
+    });
+    </script>
+
+    <p>Distributed content using <b>slots</b> will also be compiled in the parent scope.</p>
+
+    <hr />
+
+
+
+
+    <h3>Single Slot</h3>
+
+    <p>Anything inside of the <b>slot</b> tags is considered <b>fallback</b> content and will only be shown if the hosting element is empty and has nothing to be inserted:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example14"&gt;<br />
+        &lt;my-component&gt;<br />
+          &lt;p&gt;If you remove this paragraph, the default, fallback content will be shown!&lt;/p&gt;<br />
+        &lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;h4&gt;This is the child component!&lt;/h4&gt;<br />
+          &lt;slot&gt;This is fallback content...it will only be shown if there is nothing in the hosting element to be inserted.&lt;/slot&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+      var vm = new Vue({
+        el: '#example14'
+      });
+    </code></pre>
+
+    <div id="example14">
+      <my-component>
+        <p>If you remove this paragraph, the default, fallback content will be shown!</p>
+      </my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <div>
+          <h4>This is the child component!</h4>
+          <slot>This is fallback content...it will only be shown if there is nothing in the hosting element to be inserted.</slot>
+        </div>
+      `
+    });
+    var vm = new Vue({
+      el: '#example14'
+    });
+    </script>
+
+    <p><b>Remember:</b> the content between the <b>slot</b> tags will only be shown if there is nothing between the component tags to take its place.</p>
+
+    <hr />
+
+
+
+
+    <h3>Named Slots</h3>
+
+    <p>Slots with the special <b>name</b> attribute can be used to customize how content will be distributed. We can have multiple slots with different names and each named slot will match the corresponding <b>slot</b> attribute in the content fragment:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example15"&gt;<br />
+        &lt;my-page&gt;<br />
+          &lt;h3 slot="header"&gt;This is the header!&lt;/h3&gt;<br />
+          &lt;p&gt;This content is rendered in the default, unnamed slot!&lt;/p&gt;<br />
+          &lt;h3 slot="footer"&gt;This is the footer!&lt;/h3&gt;<br />
+        &lt;/my-page&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      Vue.component('my-page', {
+        template: `
+        &lt;div class="w3-container w3-white w3-center"&gt;<br />
+        &lt;header&gt;<br />
+          &lt;slot name="header"&gt;Default Content&lt;/slot&gt;<br />
+        &lt;/header&gt;<br />
+        &lt;main&gt;<br />
+          &lt;slot&gt;Default Slot&lt;/slot&gt;<br />
+        &lt;/main&gt;<br />
+        &lt;footer&gt;<br />
+          &lt;slot name="footer"&gt;Default Content&lt;/slot&gt;<br />
+        &lt;/footer&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+      var vm = new Vue({
+        el: '#example15'
+      });
+    </code></pre>
+
+    <div id="example15">
+      <my-page>
+        <h3 slot="header">This is the header!</h3>
+        <p>This content is rendered in the default, unnamed slot!</p>
+        <h3 slot="footer">This is the footer!</h3>
+      </my-page>
+    </div>
+
+    <script>
+    Vue.component('my-page', {
+      template: `
+        <div class="w3-container w3-white w3-center">
+        <header>
+          <slot name="header">Default Content</slot>
+        </header>
+        <main>
+          <slot>Default Slot</slot>
+        </main>
+        <footer>
+          <slot name="footer">Default Content</slot>
+        </footer>
+        </div>
+      `
+    });
+    var vm = new Vue({
+      el: '#example15'
+    });
+    </script>
+
+    <p>An unnamed slot can still be used to serve as a catch-all for any unmatched content. If there is no default slot, the unmatched content will be discarded.</p>
+
+    <hr />
+
+
+
+
+    <h3>Scoped Slots</h3>
+
+    <p>A scoped slot is a special type of slot that serves as a reusable template that can receive data:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example16"&gt; &lt;!-- parent scope--&gt;<br />
+        &lt;my-component&gt; &lt;!-- child component--&gt;<br />
+          &lt;template scope="props"&gt;<br />
+            &lt;span&gt;{{ parentMessage }}&lt;/span&gt;<br />
+            &lt;br /&gt;<br />
+            &lt;span&gt;{{ props.message }}&lt;/span&gt;<br />
+          &lt;/template&gt;<br />
+        &lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;div class="child"&gt;<br />
+          &lt;slot :message = 'childMessage'&gt;{{ childMessage }}&lt;/slot&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            childMessage: 'Message from Child!'
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example16',
+        data: {
+          parentMessage: 'Message from Parent!'
+        }
+      });
+    </code></pre>
+
+    <div id="example16"> <!-- parent scope-->
+      <my-component> <!-- child component-->
+        <template scope="props">
+          <span>{{ parentMessage }}</span>
+          <br />
+          <span>{{ props.message }}</span>
+        </template>
+      </my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <div class="child">
+          <slot :message = 'childMessage'>{{ childMessage }}</slot>
+        </div>
+      `,
+      data() {
+        return {
+          childMessage: 'Message from Child!'
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example16',
+      data: {
+        parentMessage: 'Message from Parent!'
+      }
+    });
+    </script>
+
+    <p>A <b>template</b> element with a special attribute <b>scope</b> indicates that it is a template for a scoped slot.</p>
+
+    <hr />
+
+
+
+
+    <h3>Another Scoped Slot Example</h3>
+
+    <p>This example allows for customization of the rendered list item:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example17"&gt;<br />
+        &lt;my-list :items = 'items'&gt;<br />
+          &lt;template slot="item" scope="props"&gt;<br />
+            &lt;li class="something-cool"&gt;{{ props.text }}&lt;/li&gt;<br />
+          &lt;/template&gt;<br />
+        &lt;/my-list&gt;<br />
+      &lt;/div&gt;
+      -------------------------------------
+      Vue.component('my-list', {
+        template: `
+        &lt;ul&gt;<br />
+          &lt;slot name="item"<br />
+            v-for="item in items"<br />
+            :text="item.text"&gt;<br />
+            &lt;!-- Fallback Content --&gt;<br />
+          &lt;/slot&gt;<br />
+        &lt;/ul&gt;
+        `,
+        props: ['items']
+      });
+      var vm = new Vue({
+        el: '#example17',
+        data: {
+          items: [
+            { text: 'Go to the store' },
+            { text: 'Walk the dog' },
+            { text: 'Take a nap...zzzz ' }
+          ]
+        }
+      });
+    </code></pre>
+
+    <div id="example17">
+      <my-list :items = 'items'>
+        <template slot="item" scope="props">
+          <li class="something-cool">{{ props.text }}</li>
+        </template>
+      </my-list>
+    </div>
+
+    <script>
+    Vue.component('my-list', {
+      template: `
+        <ul>
+          <slot name="item"
+            v-for="item in items"
+            :text="item.text">
+            <!-- Fallback Content -->
+          </slot>
+        </ul>
+      `,
+      props: ['items']
+    });
+    var vm = new Vue({
+      el: '#example17',
+      data: {
+        items: [
+          { text: 'Go to the store' },
+          { text: 'Walk the dog' },
+          { text: 'Take a nap...zzzz ' }
+        ]
+      }
+    });
+    </script>
+
+    <p>The value of scope is the name of a temporary variable that holds the props object passed from the child.</p>
+
+    <hr />
+
+
+
+
+    <h3>Dynamic Components</h3>
+
+    <p>We can dynamically switch between multiple components using the reserved <b>component</b> element and dynamically bind to its <b>is</b> attribute:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example18"&gt;<br />
+        &lt;!-- Buttons to change the component --&gt;<br />
+        &lt;button @click="currentComp = 'comp-one'"&gt;Component 1&lt;/button&gt;<br />
+        &lt;button @click="currentComp = 'comp-two'"&gt;Component 2&lt;/button&gt;<br />
+        &lt;button @click="currentComp = 'comp-three'"&gt;Component 3&lt;/button&gt;<br />
+  <br />
+        &lt;br /&gt;&lt;br /&gt;<br />
+        &lt;!-- keep-alive --&gt;<br />
+        &lt;keep-alive&gt;<br />
+          &lt;component :is="currentComp"&gt;&lt;/component&gt;<br />
+        &lt;/keep-alive&gt;<br />
+      &lt;/div&gt;
+      -----------------------------------
+      // Locally registered components
+      var Comp1 = {
+        template: `
+          &lt;div class="w3-pale-red"&gt;This is component 1&lt;/div&gt;
+        `
+      };
+      var Comp2 = {
+        template: `
+          &lt;div class="w3-green"&gt;This is component 2&lt;/div&gt;
+        `
+      };
+      var Comp3 = {
+        template: `
+          &lt;div class="w3-orange"&gt;This is component 3&lt;/div&gt;
+        `
+      };
+
+      var vm = new Vue({
+        el: '#example18',
+        data: {
+          currentComp: 'comp-one'
+        },
+        components: {
+          'comp-one': Comp1,
+          'comp-two': Comp2,
+          'comp-three': Comp3
+        }
+      });
+    </code></pre>
+
+    <div id="example18">
+      <!-- Buttons to change the component -->
+      <button @click="currentComp = 'comp-one'">Component 1</button>
+      <button @click="currentComp = 'comp-two'">Component 2</button>
+      <button @click="currentComp = 'comp-three'">Component 3</button>
+
+      <br /><br />
+      <!-- keep-alive -->
+      <keep-alive>
+        <component :is="currentComp"></component>
+      </keep-alive>
+    </div>
+
+    <script>
+    // Locally registered components
+    var Comp1 = {
+      template: `
+        <div class="w3-pale-red">This is component 1</div>
+      `
+    };
+    var Comp2 = {
+      template: `
+        <div class="w3-green">This is component 2</div>
+      `
+    };
+    var Comp3 = {
+      template: `
+        <div class="w3-orange">This is component 3</div>
+      `
+    };
+
+    var vm = new Vue({
+      el: '#example18',
+      data: {
+        currentComp: 'comp-one'
+      },
+      components: {
+        'comp-one': Comp1,
+        'comp-two': Comp2,
+        'comp-three': Comp3
+      }
+    });
+    </script>
+
+    <p><b>Note</b>: we can also bind directly to a component's object inside the data option like this: <b>currentComp: Comp3</b></p>
+
+    <p>To keep the switched-out components in memory so that you can preserve their state or avoid re-rendering, we can wrap a dynamic component in a <b>keep-alive</b> element:</p>
+
+    <hr />
+
+
+
+
+    <h3>Misc</h3>
+
+    <p>Reusable components should define a clean public interface and make no assumptions about context.</p>
+
+    <p>The API for a Vue component comes in three parts:</p>
+
+    <ul>
+      <li><b>Props:</b> allow the external environment to pass data into the component</li>
+      <li><b>Events:</b> allow the component to trigger side effects</li>
+      <li><b>Slots:</b> allow the external environment to compose the component with extra content</li>
+    </ul>
+
+    <p>With the dedicated shorthand syntax for <b>v-bind</b> and <b>v-on</b>, the intents can be clearly conveyed in the template.</p>
+
+
+
+    <hr />
+
+
+
+
+    <h3>Child Component Refs</h3>
+
+    <p>If necessary, we can use <b>ref</b> assign a reference ID to a child component to allow for direct manipulation:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example19"&gt;<br />
+        &lt;button @click="incrementCounter"&gt;Increment&lt;/button&gt;<br />
+        &lt;button @click="decrementCounter"&gt;Decrement&lt;/button&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;my-component ref="refToCounter"&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;p&gt;Counter: {{ counter }}&lt;/p&gt;
+        `,
+        data() {
+          return {
+            counter: 0
+          }
+        },
+        methods: {
+          increment() {
+            this.counter++;
+          },
+          decrement() {
+            this.counter--;
+          }
+        }
+      });
+      var vm = new Vue({
+        el: '#example19',
+        methods: {
+          incrementCounter() {
+            this.$refs.refToCounter.increment();
+          },
+          decrementCounter() {
+            this.$refs.refToCounter.decrement();
+          }
+        }
+      });
+    </code></pre>
+
+    <div id="example19">
+      <button @click="incrementCounter">Increment</button>
+      <button @click="decrementCounter">Decrement</button>
+      <br />
+      <my-component ref="refToCounter"></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+      <p>Counter: {{ counter }}</p>
+      `,
+      data() {
+        return {
+          counter: 0
+        }
+      },
+      methods: {
+        increment() {
+          this.counter++;
+        },
+        decrement() {
+          this.counter--;
+        }
+      }
+    });
+    var vm = new Vue({
+      el: '#example19',
+      methods: {
+        incrementCounter() {
+          this.$refs.refToCounter.increment();
+        },
+        decrementCounter() {
+          this.$refs.refToCounter.decrement();
+        }
+      }
+    });
+    </script>
+
+    <p><b>$refs</b> are only populated after the component has been rendered, and it is not reactive. Therefore, we should avoid using <b>$refs</b> in templates or computed properties.</p>
+
+    <hr />
+
+
+
+
+    <h3>Naming Components</h3>
+
+    <p>When registering components (or props) we can use kebab-case, camelCase or TitleCase.</p>
+
+    <p>Within HTML templates, we MUST use kebab-cased equivalents.</p>
+
+    <p>When using <b>string</b> templates, we're not bound by HTML's case-sensitive restrictions, so we can reference the components using:</p>
+
+    <ul>
+      <li>kebab-case</li>
+      <li><span style="color: lime">camelCase or kebab-case</span> if the component has been defined using camelCase</li>
+      <li><span style="color: orange">kebab-case, camelCase or TitleCase</span> if the component has been defined using TitleCase.</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example20"&gt;<br />
+        &lt;kebab-cased-component&gt;&lt;/kebab-cased-component&gt;<br />
+  <br />
+        &lt;camel-cased-component&gt;&lt;/camel-cased-component&gt;<br />
+  <br />
+        &lt;title-cased-component&gt;&lt;/title-cased-component&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      Vue.component('kebab-cased-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;div&gt;kebab-cased&lt;/div&gt;<br />
+        <br />
+          &lt;camelCasedComponent style="color: lime"&gt;&lt;/camelCasedComponent&gt;<br />
+        <br />
+          &lt;br /&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+      Vue.component('camelCasedComponent', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;div&gt;camelCased&lt;/div&gt;<br />
+        <br />
+          &lt;title-cased-component style="color: lime;"&gt;&lt;/title-cased-component&gt;<br />
+        <br />
+          &lt;TitleCasedComponent style="color: orange"&gt;&lt;/TitleCasedComponent&gt;<br />
+        <br />
+          &lt;br /&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+      Vue.component('TitleCasedComponent', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;div style="color: orange"&gt;TitleCased&lt;/div&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+
+      var vm = new Vue({
+        el: '#example20'
+      });
+    </code></pre>
+
+    <div id="example20">
+      <kebab-cased-component></kebab-cased-component>
+
+      <camel-cased-component></camel-cased-component>
+
+      <title-cased-component></title-cased-component>
+    </div>
+
+    <script>
+    Vue.component('kebab-cased-component', {
+      template: `
+        <div>
+          <div>kebab-cased</div>
+
+          <camelCasedComponent style="color: lime"></camelCasedComponent>
+
+          <br />
+        </div>
+      `
+    });
+    Vue.component('camelCasedComponent', {
+      template: `
+        <div>
+          <div>camelCased</div>
+
+          <title-cased-component style="color: lime;"></title-cased-component>
+
+          <TitleCasedComponent style="color: orange"></TitleCasedComponent>
+
+          <br />
+        </div>
+      `
+    });
+    Vue.component('TitleCasedComponent', {
+      template: `
+        <div>
+          <div style="color: orange">TitleCased</div>
+        </div>
+      `
+    });
+
+    var vm = new Vue({
+      el: '#example20'
+    });
+    </script>
+
+    <p><b>TitleCased</b> is the most universal declaration, and <b>kebab-cased</b> is the most usable declaration.</p>
+
+    <p>If the component is not content passed via <b>slot</b> elements, it can be self closing, however, this only works with <b>string</b> templates.</p>
+
+    <hr />
+
+
+
+
+    <h3>Recursive Components</h3>
+
+    <p>Components can recursively invoke themselves in their own template, however they can only do so with the <b>name</b> option. Globally registered components have the global ID pre-set to the component's name:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example21"&gt;<br />
+        &lt;my-component&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;p&gt;Recursively rendering a component without using v-if will exceed the callstack.&lt;/p&gt;<br />
+        <br />
+          &lt;!-- Will Exceed Callstack! --&gt;<br />
+          &lt;!-- &lt;my-component&gt;&lt;/my-component&gt; --&gt;<br />
+        &lt;/div&gt;
+        `
+      });
+
+      var vm = new Vue({
+        el: '#example21'
+      });
+    </code></pre>
+
+    <div id="example21">
+      <my-component></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+      <div>
+        <p>Recursively rendering a component without using v-if will exceed the callstack.</p>
+
+        <!-- Will Exceed Callstack! -->
+        <!-- <my-component></my-component> -->
+      </div>
+      `
+    });
+
+    var vm = new Vue({
+      el: '#example21'
+    });
+    </script>
+
+    <p>Make sure recursive invokation is conditional using a <b>v-if</b> that eventually returns <b>false</b>.</p>
+
+    <hr />
+
+    <h3>Inline Templates</h3>
+
+    <p>When <b>inline-template</b> is present on a child component, the component will use its inner content as its template, rather than treating it as distributed content:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example22"&gt;<br />
+        &lt;my-component inline-template&gt;<br />
+          &lt;p&gt;This is the content that will be rendered!&lt;/p&gt;<br />
+        &lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      --------------------------------
+      Vue.component('my-component', {
+        template: `
+          &lt;div&gt;This will not be rendered!&lt;/div&gt;
+        `
+      })
+      var vm = new Vue({
+        el: '#example22'
+      });
+    </code></pre>
+
+    <div id="example22">
+      <my-component inline-template>
+        <p>This is the content that will be rendered!</p>
+      </my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <div>This will not be rendered!</div>
+      `
+    })
+    var vm = new Vue({
+      el: '#example22'
+    });
+    </script>
+
+    <p>As a best practice, it is recommended to define templates inside the component using the <b>template</b> option, or in a <b>template element</b> in a <b>.vue</b> file.</p>
+
+    <hr />
+
+
+
+
+    <h3>X-Templates</h3>
+
+    <p>Another way to define templates is inside script tags with <b>type="text/x-template"</b>, and then referencing the template by an id:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example23"&gt;<br />
+        &lt;hello-world&gt;&lt;/hello-world&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      &lt;script type="text/x-template" id="hello-world"&gt;<br />
+        &lt;p&gt;Hello World!!!&lt;/p&gt;<br />
+      &lt;/script&gt;
+      -------------------------------------
+      Vue.component('hello-world', {
+        template: '#hello-world'
+      });
+      var vm = new Vue({
+        el: '#example23'
+      });
+    </code></pre>
+
+    <div id="example23">
+      <hello-world></hello-world>
+    </div>
+
+    <script type="text/x-template" id="hello-world">
+      <p>Hello World!!!</p>
+    </script>
+
+    <script>
+    Vue.component('hello-world', {
+      template: '#hello-world'
+    });
+    var vm = new Vue({
+      el: '#example23'
+    });
+    </script>
+
+    <p>This, generally, should be avoided because it separates the template from the rest of the component definition.</p>
+
+    <hr />
+
+
+
+    <h3><b>v-once</b> for Static Components</h3>
+
+    <p>To ensure that a component is only evaluated once and then cached, we can use the <b>v-once</b> directive on the root element:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example24"&gt;<br />
+        &lt;my-component&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      -------------------------------------
+      Vue.component('my-component', {
+        template: `\
+        &lt;div v-once&gt;\<br />
+        &lt;p&gt;Only Evaluated Once&lt;/p&gt;\<br />
+        ... a lot of static content...<br />
+      &lt;/div&gt;\
+        `
+      });
+      var vm = new Vue({
+        el: '#example24'
+      });
+    </code></pre>
+
+    <div id="example24">
+      <my-component></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `\
+        <div v-once>\
+          <p>Only Evaluated Once</p>\
+          ... a lot of static content...
+        </div>\
+      `
+    });
+    var vm = new Vue({
+      el: '#example24'
+    });
+    </script>
+
+    <p>This is useful for components with <b>a lot</b> of static content.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

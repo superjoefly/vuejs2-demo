@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Class and Style Binding</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+    <style>
+    .demo {
+      height: 100px;
+      width: 100px;
+      border: 2px solid lightgrey;
+    }
+
+    button {
+      margin-bottom: 10px;
+    }
+
+    .isBlue {
+      background-color: blue;
+    }
+
+    .isRed {
+      background-color: red;
+    }
+
+    .isBorderLime {
+      border: 2px solid lime;
+    }
+
+    .isRound {
+      border-radius: 50%;
+    }
+
+    .isRight {
+      float: right;
+    }
+
+    .isOrange {
+      background-color: orange;
+      border: 2px solid blue;
+    }
+
+    .isCentered {
+      margin: auto;
+    }
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Class and Style Binding</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h2>Binding HTML Classes</h2>
+
+    <p>With Vue.js, we can use the <b>v-bind:class</b> directive to manipulate an element's class list and inline styles. <b>V-bind</b> can be used on both the <b>class</b> and <b>style</b> attributes. Also important, the <b>v-bind:class</b> directive can be used at the same time as the normal class attribute:</p>
+
+    <h3>Object Syntax:</h3>
+
+    <p>Inline Object Syntax:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1" class="demo"<br />
+      :class="{isBlue: active, isBorderLime: active, isCentered: active}"<br />
+      &gt;&lt;/div&gt;
+      ----------------------------
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          active: true
+        }
+      })
+    </code></pre>
+
+    <div id="example1" class="demo"
+    :class="{isBlue: active, isBorderLime: active, isCentered: active}"
+    ></div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        active: true
+      }
+    })
+    </script>
+
+    <p>If the truthiness of the 'active' data property changes to false, then the bound class will not be applied.</p>
+
+    <hr />
+
+
+
+
+    <h3>Toggle Classes</h3>
+
+    <p><b>v-bind:class</b> can also be used when toggling classes:</p>
+
+    <pre><code class="language-javascript">
+      &lt;!-- Bind the class name to a data property that points to true or false: --&gt;
+      &lt;div id="example2"&gt;<br />
+        &lt;button @click="toggleClass"&gt;Toggle Class&lt;/button&gt;<br />
+  <br />
+        &lt;div class="demo"<br />
+          :class="{isBlue: active, isRed: notActive}"<br />
+        &gt;&lt;/div&gt;<br />
+  <br />
+      &lt;!-- Bind the class name directly to true or false: --&gt;<br />
+  <br />
+        &lt;button @click="toggleAnother"&gt;Toggle Another&lt;/button&gt;<br />
+        &lt;div class="demo" :class="myClass"&gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          active: true,
+          notActive: false,
+          myClass: {
+            'isRound': false,
+            'isRed': true
+          }
+        },
+        methods: {
+          toggleClass() {
+            this.active = !this.active;
+            this.notActive = !this.notActive;
+          },
+          toggleAnother() {
+            this.$data.myClass.isRound = !this.$data.myClass.isRound;
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example2">
+
+      <button @click="toggleClass">Toggle Class</button>
+
+      <div class="demo"
+        :class="{isBlue: active, isRed: notActive}"
+      ></div>
+
+      <hr />
+
+    <!-- The bound object does not have to be inline -->
+
+    <!-- Bind the class name directly to true or false: -->
+
+      <button @click="toggleAnother">Toggle Another</button>
+
+      <div class="demo" :class="myClass"></div>
+
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+
+      data: {
+        active: true,
+        notActive: false,
+
+        myClass: {
+          'isRound': false,
+          'isRed': true
+        }
+      },
+
+      methods: {
+        toggleClass() {
+          this.active = !this.active;
+          this.notActive = !this.notActive;
+        },
+        toggleAnother() {
+          this.$data.myClass.isRound = !this.$data.myClass.isRound;
+        }
+      }
+    })
+    </script>
+
+    <p>We can also bind to computed properties that return an object (see below).</p>
+
+    <hr />
+
+
+
+
+    <h3>Binding to Computed Properties</h3>
+
+    <p>Binding to computed properties is a common and powerful pattern:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;div class="demo"<br />
+          :class="anotherClass"<br />
+        &gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+      ----------------------------
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          active: true,
+          notActive: false,
+          error: null,
+        },
+        computed: {
+          anotherClass() {
+            return {
+              isRed: this.notActive,
+              isRound: this.active,
+              isBorderLime: this.active && !this.error
+            }
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example3">
+      <div class="demo"
+        :class="anotherClass"
+      ></div>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        active: true,
+        notActive: false,
+        error: null,
+      },
+
+      computed: {
+        anotherClass() {
+          return {
+            isRed: this.notActive,
+            isRound: this.active,
+            isBorderLime: this.active && !this.error
+          }
+        }
+      }
+    })
+    </script>
+
+    <p>A computed property can hold more complex logic for the class bindings.</p>
+
+    <hr />
+
+
+
+
+    <h3>Inline Array Syntax</h3>
+
+    <p>Arrays can be used to apply a list of classes:</p>
+
+    <!-- Bind the class to a data property: -->
+
+    <pre><code class="language-javascript">
+    &lt;!-- Bind the class to a data property: --&gt;
+      &lt;div id="example4"&gt;<br />
+        &lt;div class="demo"<br />
+          :class="[backgroundBlue, limeBorder, round, right]"<br />
+        &gt;&lt;/div&gt;<br />
+  <br />
+    &lt;!-- We can also use object syntax inside array syntax: --&gt;<br />
+  <br />
+    &lt;!-- Bind the class name to a data property that points to true or false: --&gt;<br />
+  <br />
+        &lt;div class="demo"<br />
+          :class="[{isOrange: isActive}, round]"<br />
+        &gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          isActive: true,
+          backgroundRed: 'isRed',
+          backgroundBlue: 'isBlue',
+          limeBorder: 'isLimeBorder',
+          round: 'isRound',
+          right: 'isRight'
+         }
+      })
+    </code></pre>
+
+    <div id="example4">
+      <div class="demo"
+        :class="[backgroundBlue, limeBorder, round, right]"
+      ></div>
+
+      <br style="clear: both;" />
+
+      <!-- We can also use object syntax inside array syntax: -->
+
+      <!-- Bind the class name to a data property that points to true or false: -->
+
+      <div class="demo"
+        :class="[{isOrange: isActive}, round]"
+      ></div>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        isActive: true,
+        backgroundRed: 'isRed',
+        backgroundBlue: 'isBlue',
+        limeBorder: 'isLimeBorder',
+        round: 'isRound',
+        right: 'isRight'
+       }
+    })
+    </script>
+
+    <p style="clear: both">Binding data properties to class names, and then listing them inline in an array is very simple.</p>
+
+    <hr />
+
+
+
+
+    <h3>Binding Classes to Components</h3>
+
+    <p>When using the normal class attribute on a custom component, those classes will be added to the component's root element:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;my-component<br />
+          :class="[redBackground, centered]"<br />
+        &gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+      ------------------------------
+      Vue.component('my-component', {
+        template: `
+        &lt;div class="demo"&gt;&lt;/div&gt;
+        `
+      })
+      var vm = new Vue({
+        el: '#example5',
+        data: {
+          redBackground: 'isRed',
+          centered: 'isCentered'
+        }
+      })
+    </code></pre>
+
+    <div id="example5">
+      <my-component
+        :class="[redBackground, centered]"
+      ></my-component>
+    </div>
+
+    <script>
+    Vue.component('my-component', {
+      template: `
+        <div class="demo"></div>
+      `
+    })
+    var vm = new Vue({
+      el: '#example5',
+      data: {
+        redBackground: 'isRed',
+        centered: 'isCentered'
+      }
+    })
+    </script>
+
+    <p>The existing classes on the element will NOT be overwritten.</p>
+
+    <hr />
+
+
+
+
+    <h2>Binding Inline Styles</h2>
+
+    <p>We can use <b>v-bind:style</b> to bind inline styles. It's similar to CSS, except it's a JavaScript object, so we need to use camelCase or kebab-case (use quotes with kebab-case) for the property names:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;div class="demo"<br />
+          :style="{backgroundColor: yellowBackground, border: redBorder, borderRadius: round}"&gt;<br />
+        &lt;/div&gt;<br />
+  <br />
+      &lt;!-- Binding to a style object is cleaner: --&gt;<br />
+        &lt;div class="demo"<br />
+          :style="myStyles"<br />
+        &gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          yellowBackground: 'yellow',
+          redBorder: '2px solid red',
+          round: '50%',
+
+          myStyles: {
+            backgroundColor: 'green',
+            borderRadius: '25%',
+            margin: 'auto'
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <div class="demo"
+        :style="{backgroundColor: yellowBackground, border: redBorder, borderRadius: round}">
+      </div>
+
+      <!-- Binding to a style object is cleaner: -->
+      <div class="demo"
+        :style="myStyles"
+      ></div>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        yellowBackground: 'yellow',
+        redBorder: '2px solid red',
+        round: '50%',
+
+        myStyles: {
+          backgroundColor: 'green',
+          borderRadius: '25%',
+          margin: 'auto'
+        }
+      }
+    })
+    </script>
+
+    <p>The object syntax is often used in conjunction with computed properties that return objects.</p>
+
+    <hr />
+
+
+
+
+    <h3>Array Syntax for Binding Styles</h3>
+
+    <p>Using array syntax allows us to apply multiple style objects to the same element:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;div class="demo"<br />
+          :style="[initialStyles, overridingStyles]"<br />
+        &gt;Here is some text!&lt;/div&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example7',
+        data: {
+          initialStyles: {
+            backgroundColor: 'purple',
+            float: 'right'
+          },
+          overridingStyles: {
+            width: '300px',
+            fontSize: '20px',
+            color: 'white',
+            textAlign: 'center',
+            paddingTop: '30px',
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example7">
+      <div class="demo"
+        :style="[initialStyles, overridingStyles]"
+      >Here is some text!</div>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example7',
+      data: {
+        initialStyles: {
+          backgroundColor: 'purple',
+          float: 'right'
+        },
+        overridingStyles: {
+          width: '300px',
+          fontSize: '20px',
+          color: 'white',
+          textAlign: 'center',
+          paddingTop: '30px',
+        }
+      }
+    })
+    </script>
+
+    <p style="clear: both"><b>Auto-prefixing:</b> when using CSS properties that require vendor prefixes, Vue will automatically detect and add appropriate prefixes to the applied styles.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

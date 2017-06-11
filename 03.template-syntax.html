@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Template Syntax</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prismjs -->
+    <link rel="stylesheet" href="styles/prism.css" />
+    <script src="scripts/prism.js"></script>
+
+    <style>
+    .customClass {
+      height: 100px;
+      width: 100px;
+      background-color: blue;
+    }
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Template Syntax</h1>
+
+
+
+    <h2>Interpolations</h2>
+
+
+    <p>The most basic form of data binding is text interpolation using the <b>{{mustache}}</b> syntax:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;p&gt;Message: {{ msg }}&lt;/p&gt;<br />
+        &lt;p v-once&gt;This message will never change: {{ anotherMessage }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+    ---------------------------
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        msg: 'Hello There!',
+        anotherMessage: 'What is up?'
+      }
+    })
+    </code></pre>
+
+    <div id="example1">
+      <p>Message: {{ msg }}</p>
+      <p v-once>This message will never change: {{ anotherMessage }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        msg: 'Hello There!',
+        anotherMessage: 'What is up?'
+      }
+    })
+    </script>
+
+    <p>The mustache tag is replaced with the value of the 'message' property on the cooresponding data object. It is also updated whenever the data object's 'message' property changes.</p>
+
+    <p>To perform one-time interpolations that don't update on data change use <b>v-once</b>, bue keep in mind that this will also affect any binding on the same node.</p>
+
+    <hr />
+
+
+
+
+    <h3>Raw HTML</h3>
+
+    <p>The double mustaches interprets the data as plain text. In order to output real HTML, you will need to use the <b>v-html</b> directive:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;span v-html="rawHTML"&gt;&lt;/span&gt;<br />
+      &lt;/div&gt;
+    ------------------------
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        rawHTML: null
+      }
+    })
+    </code></pre>
+
+    <div id="example2">
+      <span v-html="rawHTML"></span>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        rawHTML: null
+      }
+    })
+    </script>
+
+    <p>Dynamically rendering arbitrary HTML on you website is <b>dangerous and should be avoided!</b> Only use HTML interpolation on trusted content and NEVER on user-provided content.</p>
+
+    <hr />
+
+
+
+
+    <h3>Attributes</h3>
+
+    <p>Mustaches cannot be used inside HTML attributes; instead use a <b>v-bind directive:</b></p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example3"&gt;<br />
+        &lt;div v-bind:class="myClass"&gt;&lt;/div&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;p&gt;Also works for boolean attributes...&lt;/p&gt;<br />
+        &lt;button v-bind:disabled="dynamicCondition"&gt;Button&lt;/button&gt;<br />
+      &lt;/div&gt;
+    ------------------------------
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        myClass: 'customClass',
+        dynamicCondition: true
+      }
+    })
+    </code></pre>
+
+    <div id="example3">
+      <div v-bind:class="myClass"></div>
+      <br />
+      <p>Also works for boolean attributes...</p>
+      <button v-bind:disabled="dynamicCondition">Button</button>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          myClass: 'customClass',
+          dynamicCondition: true
+        }
+      })
+    </script>
+
+    <p>The shorthand for <b>v-bind:</b> would be <b>:class=</b> and <b>:disabled=</b></p>
+
+    <hr />
+
+
+
+
+    <h3>Using JavaScript Expressions</h3>
+
+    <p>Vue.js supports the full power of JavaScript expressions inside all data bindings:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;<br />
+        &lt;p&gt;{{ number + 3 }}&lt;/p&gt;<br />
+        &lt;p&gt;{{ message.toUpperCase() }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+    -------------------------------
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        number: 7,
+        message: 'This will be in upper-case!'
+      }
+    })
+    </code></pre>
+
+    <div id="example4">
+      <p>{{ number + 3 }}</p>
+      <p>{{ message.toUpperCase() }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        number: 7,
+        message: 'This will be in upper-case!'
+      }
+    })
+    </script>
+
+    <p>Each data binding can only contain <b>one single expression</b>. Do not attempt to access user defined globals in template expressions.</p>
+
+    <hr />
+
+
+
+
+    <h2>Directives</h2>
+
+
+    <p>Directives are special attributes with the <b>v-</b> prefix. These directives reactively apply side-effects to the DOM when the value of its expression changes. Directive attribute values are expected to be a sinlge JavaScript expression (with the exception of <b>v-for</b>).</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        &lt;p v-if="seen"&gt;Can you see me?&lt;/p&gt;<br />
+      &lt;/div&gt;
+      -------------------------------
+      var vm = new Vue({
+        el: '#example5',
+        data: {
+          seen: true
+        }
+      })
+    </code></pre>
+
+    <div id="example5">
+      <p v-if="seen">Can you see me?</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5',
+      data: {
+        seen: true
+      }
+    })
+    </script>
+
+    <p>The <b>p-element</b> will be added and removed based on the truthiness of the value of the expression of <b>seen</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Arguments</h3>
+
+    <p>Some arguments can take an "argument" denoted by a colon after the directive name:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example6"&gt;<br />
+        &lt;p&gt;&lt;a v-bind:href="link"&gt;Vuejs.org&lt;/a&gt;&lt;/p&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;button v-on:click="alertMe"&gt;Alert&lt;/button&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example6',
+        data: {
+          link: 'http://vuejs.org'
+        },
+        methods: {
+          alertMe() {
+            alert("Well, hello there!");
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example6">
+      <p><a v-bind:href="link">Vuejs.org</a></p>
+      <br />
+      <button v-on:click="alertMe">Alert</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example6',
+      data: {
+        link: 'http://vuejs.org'
+      },
+      methods: {
+        alertMe() {
+          alert("Well, hello there!");
+        }
+      }
+    })
+    </script>
+
+    <p>The <b>v-bind:</b> directive is used to reactively update an HTML attribute.</p>
+
+    <p>The <b>v-on:</b> directive listens to DOM events.</p>
+
+    <hr />
+
+
+
+
+    <h3>Modifiers</h3>
+
+    <p>Modifiers are special post-fixes denoted by a dot.</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example7"&gt;<br />
+        &lt;button v-on:submit.prevent="onSubmit"&gt;Submit&lt;/button&gt;<br />
+      &lt;/div&gt;
+      ----------------------------------
+      var vm = new Vue({
+        el: '#example7',
+        methods: {
+          onSubmit() {
+            alert("This will NOT show!")
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example7">
+      <button v-on:submit.prevent="onSubmit">Submit</button>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example7',
+      methods: {
+        onSubmit() {
+          alert("This will NOT show!")
+        }
+      }
+    })
+    </script>
+
+    <p>The <b>.prevent</b> modifier tells the <b>v-on</b> directive to call <b>event.preventDefault()</b> on the triggered event.</p>
+
+    <hr />
+
+
+
+
+    <h2>Filters</h2>
+
+
+    <p>Filters can be used to apply common text formatting. The filter function always receives the expression's value as the as the first argument:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example8"&gt;<br />
+        &lt;p&gt;{{ message | capitalize | reverse }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example8',
+        data: {
+          message: 'Hey there, You!'
+        },
+        filters: {
+          capitalize(value) {
+            return value.toUpperCase();
+          },
+          reverse(value) {
+            return value.split('').reverse().join('');
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example8">
+      <p>{{ message | capitalize | reverse }}</p>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#example8',
+        data: {
+          message: 'Hey there, You!'
+        },
+        filters: {
+          capitalize(value) {
+            return value.toUpperCase();
+          },
+          reverse(value) {
+            return value.split('').reverse().join('');
+          }
+        }
+      })
+    </script>
+
+    <p>Filters can be chained and can also take arguments.</p>
+
+    <hr />
+
+
+
+
+    <h2>Shorthands</h2>
+
+
+    <p>The <b>v-</b> prefix serves as a visual cue for identifying Vue-specific attributes. Vue.js provides special shorthands for two of the most often used directives, <b>v-bind</b> and <b>v-on</b>:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div id="example9"&gt;<br />
+        &lt;a v-bind:href="link"&gt;Link1&lt;/a&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;a :href="link"&gt;Link2&lt;/a&gt;<br />
+<br />
+        &lt;hr /&gt;<br />
+<br />
+        &lt;button v-on:click="alertMe"&gt;Alert1&lt;/button&gt;<br />
+        &lt;br /&gt;&lt;br /&gt;<br />
+        &lt;button @click="alertMe"&gt;Alert2&lt;/button&gt;<br />
+      &lt;/div&gt;
+      ---------------------------------
+      var vm = new Vue({
+        el: '#example9',
+        data: {
+          link: 'https://vuejs.org'
+        },
+
+        methods: {
+          alertMe() {
+            alert("You've been alerted!");
+          }
+        }
+      })
+    </code></pre>
+
+    <div id="example9">
+      <a v-bind:href="link">Link1</a>
+      <br />
+      <a :href="link">Link2</a>
+
+      <hr />
+
+      <button v-on:click="alertMe">Alert1</button>
+      <br /><br />
+      <button @click="alertMe">Alert2</button>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#example9',
+        data: {
+          link: 'https://vuejs.org'
+        },
+
+        methods: {
+          alertMe() {
+            alert("You've been alerted!");
+          }
+        }
+      })
+    </script>
+
+    <p>Shorthand syntax is totally optional.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+
+  </body>
+</html>
